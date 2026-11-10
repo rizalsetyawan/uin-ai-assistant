@@ -63,6 +63,27 @@
   </script>
 
   <style>
+    :root {
+      --app-height: 100dvh;
+    }
+
+    html {
+      height: 100%;
+      height: -webkit-fill-available;
+      overflow: hidden;
+    }
+
+    body {
+      height: 100vh;
+      height: var(--app-height, 100dvh);
+      max-height: var(--app-height, 100dvh);
+      min-height: 100%;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
     /* Custom scrollbars */
     ::-webkit-scrollbar {
       width: 4px;
@@ -84,6 +105,11 @@
       -webkit-tap-highlight-color: transparent;
     }
     
+    /* Mobile Safe Area Bottom padding */
+    .safe-area-bottom {
+      padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 0.75rem), 0.75rem);
+    }
+
     .safe-bottom-padding {
       padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 84px);
     }
@@ -179,7 +205,7 @@
   </style>
 </head>
 
-<body class="bg-brand-darkest text-slate-100 font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-300">
+<body class="bg-brand-darkest text-slate-100 font-sans antialiased flex flex-col overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-300">
 
   <!-- ========================================================
        TOPBAR (Responsive: Desktop Spacious Bar + Mobile Native Controls)
@@ -676,7 +702,21 @@
     let conversationHistory = [];
     let activeAbortController = null;
 
-    // API Key Helpers
+    // Mobile Viewport Fix (Prevents bottom nav-bar clipping & handles keyboard)
+    function initMobileViewport() {
+      const updateHeight = () => {
+        const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', `${h}px`);
+      };
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateHeight);
+        window.visualViewport.addEventListener('scroll', updateHeight);
+      }
+      window.addEventListener('resize', updateHeight);
+      window.addEventListener('orientationchange', () => setTimeout(updateHeight, 150));
+      updateHeight();
+    }
+    initMobileViewport();
     function getApiKey() {
       return localStorage.getItem("uin_gemini_api_key") || DEFAULT_API_KEY;
     }
