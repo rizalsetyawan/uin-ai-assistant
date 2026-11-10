@@ -153,8 +153,8 @@ export default function Header({
                   <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)}></div>
                   <div className="absolute right-0 mt-2 w-56 bg-[#07201c] border border-brand-cardBorder rounded-2xl shadow-2xl p-2 z-50 space-y-1">
                     <div className="px-3 py-2 border-b border-brand-cardBorder/50">
-                      <p className="text-xs font-bold text-white truncate">{user.displayName || "Pengguna UIN"}</p>
-                      <p className="text-[10px] text-gray-400 font-mono truncate">{user.email}</p>
+                      <p className="text-xs font-bold text-white truncate">@{user.displayName || user.email?.split("@")[0] || "pengguna"}</p>
+                      <p className="text-[10px] text-emerald-400 font-mono truncate">Akun Terhubung (Firebase)</p>
                     </div>
                     <button
                       onClick={() => {

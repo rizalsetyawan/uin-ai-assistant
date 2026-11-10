@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { onAuthChange, loginWithGoogle, loginWithEmail, registerWithEmail, logoutUser } from "../firebase/auth";
+import { onAuthChange, loginWithUsername, registerWithUsername, logoutUser } from "../firebase/auth";
 import { isFirebaseConfigured, getFirebaseConfig } from "../firebase/config";
 
 const AuthContext = createContext(null);
@@ -33,9 +33,8 @@ export function AuthProvider({ children }) {
     loading,
     isConfigured,
     reloadFirebaseConfig,
-    loginGoogle: loginWithGoogle,
-    loginEmail: loginWithEmail,
-    signupEmail: registerWithEmail,
+    login: loginWithUsername,
+    signup: registerWithUsername,
     logout: logoutUser,
     showAuthModal,
     openAuthModal: () => setShowAuthModal(true),
@@ -57,4 +56,3 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
   return ctx;
 }
-

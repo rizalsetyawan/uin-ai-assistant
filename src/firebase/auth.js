@@ -1,34 +1,40 @@
 import { 
-  signInWithPopup, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   updateProfile,
   signOut, 
   onAuthStateChanged 
 } from "firebase/auth";
-import { auth, googleProvider, isFirebaseConfigured } from "./config";
+import { auth, isFirebaseConfigured } from "./config";
 
-export async function loginWithGoogle() {
-  if (!isFirebaseConfigured || !auth) {
-    throw new Error("Firebase belum dikonfigurasi. Silakan masukkan Firebase Config di pengaturan.");
+// Convert username to internal identity
+const INTERNAL_DOMAIN = "@uin.ai";
+
+export function usernameToAuthId(username) {
+  const clean = username.trim().toLowerCase().replace(/[^a-z0-9_.-]/g, "");
+  if (!clean || clean.length < 3) {
+    throw new Error("Username minimal 3 karakter (huruf, angka, strip, atau garis bawah).");
   }
-  return await signInWithPopup(auth, googleProvider);
+  return `${clean}${INTERNAL_DOMAIN}`;
 }
 
-export async function loginWithEmail(email, password) {
+export async function loginWithUsername(username, password) {
   if (!isFirebaseConfigured || !auth) {
-    throw new Error("Firebase belum dikonfigurasi.");
+    throw new Error("Firebase belum siap.");
   }
+  const email = usernameToAuthId(username);
   return await signInWithEmailAndPassword(auth, email, password);
 }
 
-export async function registerWithEmail(email, password, displayName) {
+export async function registerWithUsername(username, password) {
   if (!isFirebaseConfigured || !auth) {
-    throw new Error("Firebase belum dikonfigurasi.");
+    throw new Error("Firebase belum siap.");
   }
+  const cleanName = username.trim();
+  const email = usernameToAuthId(cleanName);
   const cred = await createUserWithEmailAndPassword(auth, email, password);
-  if (displayName && cred.user) {
-    await updateProfile(cred.user, { displayName });
+  if (cred.user) {
+    await updateProfile(cred.user, { displayName: cleanName });
   }
   return cred;
 }
@@ -45,4 +51,3 @@ export function onAuthChange(callback) {
   }
   return onAuthStateChanged(auth, callback);
 }
-
