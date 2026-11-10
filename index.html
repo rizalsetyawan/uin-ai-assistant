@@ -547,19 +547,6 @@
 
     <!-- Messages List -->
     <div id="messagesList" class="space-y-4"></div>
-
-    <!-- Loading Indicator -->
-    <div id="loadingIndicator" class="hidden flex items-start gap-3">
-      <div class="w-8 h-8 rounded-full bg-emerald-950/70 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow">
-        <span class="material-symbols-outlined text-emerald-400 text-[18px] animate-spin">autorenew</span>
-      </div>
-      <div class="p-3 rounded-2xl bg-brand-card border border-brand-cardBorder flex items-center gap-2 shadow-md">
-        <span id="loadingStatusText" class="text-xs text-gray-400 font-mono">Menghubungkan ke Gemini...</span>
-        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
-        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
-        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
-      </div>
-    </div>
   </main>
 
   <!-- ========================================================
@@ -932,11 +919,10 @@ ATURAN MODE RISET DETAIL:
 
       setSendButtonState("stop");
       const assistantMessageEls = createAssistantMessagePlaceholder();
+      const avatarEl = assistantMessageEls.avatar;
       const contentEl = assistantMessageEls.content;
       const modelBadgeEl = assistantMessageEls.badge;
       const copyBtn = assistantMessageEls.copyBtn;
-
-      showLoading(true, "Menghubungkan ke Gemini API...");
 
       activeAbortController = new AbortController();
 
@@ -948,11 +934,13 @@ ATURAN MODE RISET DETAIL:
           systemPrompt: buildSystemPrompt(),
           signal: activeAbortController.signal,
           onStartModel: (modelName) => {
-            showLoading(true, `Menghubungkan ke ${modelName}...`);
             modelBadgeEl.textContent = modelName;
+            const loadText = contentEl.querySelector(".msg-loading-text");
+            if (loadText) loadText.textContent = `Menghubungkan ke ${modelName}...`;
           },
           onFirstToken: (modelName) => {
-            showLoading(false);
+            avatarEl.innerHTML = `<img src="logo-uin.svg" alt="UIN AI" class="w-full h-full object-contain" />`;
+            contentEl.innerHTML = "";
             contentEl.classList.add("stream-cursor");
             modelBadgeEl.textContent = modelName;
           },
@@ -963,6 +951,7 @@ ATURAN MODE RISET DETAIL:
           }
         });
 
+        avatarEl.innerHTML = `<img src="logo-uin.svg" alt="UIN AI" class="w-full h-full object-contain" />`;
         contentEl.classList.remove("stream-cursor");
         contentEl.innerHTML = marked.parse(fullGeneratedText);
         copyBtn.classList.remove("hidden");
@@ -976,7 +965,7 @@ ATURAN MODE RISET DETAIL:
         });
 
       } catch (err) {
-        showLoading(false);
+        avatarEl.innerHTML = `<img src="logo-uin.svg" alt="UIN AI" class="w-full h-full object-contain" />`;
         contentEl.classList.remove("stream-cursor");
         if (err.name === "AbortError") {
           contentEl.innerHTML += `<p class="text-amber-400 text-xs italic mt-2">[Generasi dihentikan oleh pengguna]</p>`;
@@ -995,7 +984,6 @@ ATURAN MODE RISET DETAIL:
       } finally {
         activeAbortController = null;
         setSendButtonState("send");
-        showLoading(false);
         scrollToBottom();
       }
     }
@@ -1123,8 +1111,8 @@ ATURAN MODE RISET DETAIL:
       wrapper.className = "flex items-start gap-2.5 sm:gap-3";
 
       wrapper.innerHTML = `
-        <div class="w-8 h-8 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow mt-0.5 p-1">
-          <img src="logo-uin.svg" alt="UIN AI" class="w-full h-full object-contain" />
+        <div class="msg-avatar w-8 h-8 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow mt-0.5 p-1 transition-all">
+          <span class="material-symbols-outlined text-emerald-400 text-[18px] animate-spin">autorenew</span>
         </div>
         <div class="flex-1 max-w-[90%] sm:max-w-[85%] rounded-2xl rounded-tl-sm bg-brand-card border border-brand-cardBorder p-3.5 sm:p-4 shadow-lg space-y-2">
           <div class="flex items-center justify-between border-b border-brand-cardBorder/50 pb-1.5 text-[10px] text-gray-400 font-mono">
@@ -1137,7 +1125,16 @@ ATURAN MODE RISET DETAIL:
               <span>Salin</span>
             </button>
           </div>
-          <div class="chat-prose msg-content min-h-[20px]"></div>
+          <div class="chat-prose msg-content min-h-[20px]">
+            <div class="msg-loading-placeholder flex items-center gap-2 py-1 text-xs text-gray-400 font-mono">
+              <span class="msg-loading-text">Menghubungkan ke Gemini...</span>
+              <div class="flex items-center gap-1">
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
+              </div>
+            </div>
+          </div>
         </div>
       `;
 
@@ -1145,22 +1142,15 @@ ATURAN MODE RISET DETAIL:
       scrollToBottom();
 
       return {
+        avatar: wrapper.querySelector(".msg-avatar"),
         content: wrapper.querySelector(".msg-content"),
         badge: wrapper.querySelector(".msg-model-badge"),
         copyBtn: wrapper.querySelector(".msg-copy-btn")
       };
     }
 
-    function showLoading(show, statusText) {
-      const el = document.getElementById("loadingIndicator");
-      const txt = document.getElementById("loadingStatusText");
-      if (show) {
-        if (statusText) txt.textContent = statusText;
-        el.classList.remove("hidden");
-      } else {
-        el.classList.add("hidden");
-      }
-      scrollToBottom();
+    function showLoading() {
+      // Intentionally empty: loading indicator is embedded inside the assistant bubble
     }
 
     function setSendButtonState(state) {
