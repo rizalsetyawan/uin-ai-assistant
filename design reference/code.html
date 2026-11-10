@@ -63,25 +63,22 @@
   </script>
 
   <style>
-    :root {
-      --app-height: 100dvh;
-    }
-
     html {
       height: 100%;
-      height: -webkit-fill-available;
-      overflow: hidden;
     }
 
     body {
-      height: 100vh;
-      height: var(--app-height, 100dvh);
-      max-height: var(--app-height, 100dvh);
       min-height: 100%;
-      min-height: -webkit-fill-available;
-      overflow: hidden;
+      height: 100%;
       display: flex;
       flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
     }
 
     /* Custom scrollbars */
@@ -107,11 +104,11 @@
     
     /* Mobile Safe Area Bottom padding */
     .safe-area-bottom {
-      padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 0.75rem), 0.75rem);
+      padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 0.65rem), 0.85rem);
     }
 
     .safe-bottom-padding {
-      padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 84px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 120px);
     }
 
     /* Markdown prose styles tailored for academic answers */
@@ -438,7 +435,7 @@
   <!-- ========================================================
        MAIN CHAT & CONTENT VIEWPORT
        ======================================================== -->
-  <main id="chatContainer" class="flex-1 overflow-y-auto px-3.5 sm:px-6 py-4 sm:py-6 space-y-4 max-w-4xl mx-auto w-full">
+  <main id="chatContainer" class="flex-1 min-h-0 overflow-y-auto px-3.5 sm:px-6 py-4 sm:py-6 space-y-4 max-w-4xl mx-auto w-full pb-36 md:pb-6">
     
     <!-- WELCOME CARD -->
     <section id="welcomeCard" class="space-y-4">
@@ -580,9 +577,9 @@
   </main>
 
   <!-- ========================================================
-       BOTTOM INPUT BAR (Responsive: Mobile Full-width Pill & Desktop Spacious Card)
+       BOTTOM INPUT BAR (Fixed at bottom on mobile, static on desktop)
        ======================================================== -->
-  <footer class="shrink-0 bg-[#051311]/95 backdrop-blur-md border-t border-brand-cardBorder px-3.5 sm:px-6 pt-2.5 pb-3 sm:pb-4 safe-area-bottom shadow-2xl z-20">
+  <footer class="fixed md:static bottom-0 left-0 right-0 z-30 bg-[#051311] md:bg-[#051311]/95 md:backdrop-blur-md border-t border-brand-cardBorder px-3.5 sm:px-6 pt-2.5 pb-2 sm:pb-4 safe-area-bottom shadow-2xl shrink-0">
     <div class="max-w-4xl mx-auto w-full">
       
       <!-- Input Box -->
@@ -702,19 +699,25 @@
     let conversationHistory = [];
     let activeAbortController = null;
 
-    // Mobile Viewport Fix (Prevents bottom nav-bar clipping & handles keyboard)
+    // Mobile Viewport Fix (Guarantees input is always visible above mobile browser nav-bar and keyboard)
     function initMobileViewport() {
-      const updateHeight = () => {
-        const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        document.documentElement.style.setProperty('--app-height', `${h}px`);
+      const footer = document.querySelector("footer");
+      const updateViewport = () => {
+        if (!window.visualViewport) return;
+        if (window.innerWidth < 768 && footer) {
+          const offsetBottom = window.innerHeight - (window.visualViewport.offsetTop + window.visualViewport.height);
+          footer.style.bottom = `${Math.max(0, offsetBottom)}px`;
+        } else if (footer) {
+          footer.style.bottom = "";
+        }
       };
       if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', updateHeight);
-        window.visualViewport.addEventListener('scroll', updateHeight);
+        window.visualViewport.addEventListener("resize", updateViewport);
+        window.visualViewport.addEventListener("scroll", updateViewport);
       }
-      window.addEventListener('resize', updateHeight);
-      window.addEventListener('orientationchange', () => setTimeout(updateHeight, 150));
-      updateHeight();
+      window.addEventListener("resize", updateViewport);
+      window.addEventListener("orientationchange", () => setTimeout(updateViewport, 150));
+      updateViewport();
     }
     initMobileViewport();
     function getApiKey() {
