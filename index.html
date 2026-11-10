@@ -15,6 +15,12 @@
   <!-- Marked.js for clean Markdown rendering -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+  <!-- KaTeX for Mathematics, Algorithms & Science formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension@5.1.4/lib/index.umd.js"></script>
+
   <!-- Tailwind CSS CDN with Plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
@@ -199,6 +205,18 @@
     .typing-dot { animation: typingBounce 1.4s infinite ease-in-out both; }
     .typing-dot:nth-child(1) { animation-delay: -0.32s; }
     .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    /* KaTeX Math, Algorithm & Science formula rendering */
+    .chat-prose .katex {
+      font-size: 1.05em;
+      color: #a7f3d0;
+    }
+    .chat-prose .katex-display {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0.5rem 0;
+      margin: 0.5rem 0;
+    }
   </style>
 </head>
 
@@ -918,7 +936,9 @@ PERATURAN MUTLAK BIDANG ILMU & INTEGRASI KEILMUAN:
 1. SESUAIKAN DENGAN DISIPLIN ILMU YANG DITANYAKAN:
    - Jika pertanyaan mengenai SAINS, MATEMATIKA, ILMU KOMPUTER, CODING, TEKNIK, FISIKA, BIOLOGI, atau ilmu eksak umum: JAWAB SECARA MURNI TEKNIS & SAINTIFIK. DILARANG KERAS memaksakan ayat Al-Qur'an, Hadis, dalil syariah, atau istilah Islam jika topik dan pertanyaannya TIDAK memintanya. Sumber rujukan wajib berasal dari buku teks sains, dokumentasi resmi, atau jurnal ilmiah sains standar (IEEE, ACM, Nature, Elsevier).
    - Jika pertanyaan mengenai ILMU AGAMA ISLAM (Fikih, Hadis, Ushuluddin, Tafsir, Syari'ah, Hukum Islam, Ekonomi Syariah): Gunakan metodologi studi Islam yang sahih, sertakan dalil naqli/rujukan ulama mu'tabar serta jurnal studi Islam (Al-Jami'ah, Al-Ahwal, JPI UIN Suka).
-   - Jika pertanyaan eksplisit meminta paradigma "Integrasi-Interkoneksi" ala Prof. M. Amin Abdullah atau skripsi interdisipliner: Baru lakukan dialog antara sains modern dan nilai-nilai filosofis/etika Islam.`;
+   - Jika pertanyaan eksplisit meminta paradigma "Integrasi-Interkoneksi" ala Prof. M. Amin Abdullah atau skripsi interdisipliner: Baru lakukan dialog antara sains modern dan nilai-nilai filosofis/etika Islam.
+2. FORMAT MATEMATIKA, SAINS, & NOTASI KOMPLEKSITAS:
+   - Untuk rumus matematika, persamaan fisika/kimia, dan notasi algoritma/Big-O: Gunakan format LaTeX standar seperti $O(n)$, $O(\log n)$, $O(n^2)$ atau format blok $$ ... $$ agar otomatis ter-render menjadi simbol matematika visual yang rapi.`;
 
       if (isSimple) {
         base += `\n\nMODE SAAT INI: "MODE TUGAS BIASA (SINGKAT & CEPAT)"
@@ -949,6 +969,30 @@ ATURAN MODE RISET DETAIL:
       gfm: true,
       sanitize: false
     });
+
+    if (window.markedKatex) {
+      marked.use(markedKatex({
+        throwOnError: false,
+        nonStandard: true
+      }));
+    }
+
+    function renderMarkdown(targetEl, text) {
+      targetEl.innerHTML = marked.parse(text);
+      if (window.renderMathInElement) {
+        try {
+          renderMathInElement(targetEl, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false },
+              { left: '\\(', right: '\\)', display: false },
+              { left: '\\[', right: '\\]', display: true }
+            ],
+            throwOnError: false
+          });
+        } catch (_) {}
+      }
+    }
 
     async function handleChatSubmit(event) {
       if (event) event.preventDefault();
@@ -1006,7 +1050,7 @@ ATURAN MODE RISET DETAIL:
           },
           onChunk: (chunkText) => {
             fullGeneratedText += chunkText;
-            contentEl.innerHTML = marked.parse(fullGeneratedText);
+            renderMarkdown(contentEl, fullGeneratedText);
             scrollToBottom();
           }
         });
@@ -1015,7 +1059,7 @@ ATURAN MODE RISET DETAIL:
         if (finalImg) finalImg.classList.remove("animate-spin");
         else avatarEl.innerHTML = `<img src="logo-uin.svg" alt="UIN AI" class="w-full h-full object-contain" />`;
         contentEl.classList.remove("stream-cursor");
-        contentEl.innerHTML = marked.parse(fullGeneratedText);
+        renderMarkdown(contentEl, fullGeneratedText);
         copyBtn.classList.remove("hidden");
         copyBtn.onclick = () => {
           navigator.clipboard.writeText(fullGeneratedText).then(() => showToast("Jawaban disalin ke clipboard!"));
