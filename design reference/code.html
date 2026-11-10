@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-  <title>Chatbot Akademik UIN Sunan Kalijaga | Gemini AI (Auto-Failover High Availability)</title>
+  <title>AI Akademik UIN Sunan Kalijaga | Gemini Auto-Failover</title>
   
-  <!-- Fonts & Icons -->
+  <!-- Fonts & Material Icons -->
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -13,31 +13,41 @@
 
   <!-- Marked.js for clean Markdown rendering -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind CSS CDN with Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            primary: "#4edea3",
-            "primary-container": "#10b981",
-            "on-primary": "#003824",
-            secondary: "#ffb95f",
-            "secondary-container": "#ee9800",
-            surface: "#011710",
-            "surface-low": "#072018",
-            "surface-card": "#0c241c",
-            "surface-high": "#172e27",
-            "surface-highest": "#223931",
-            "on-surface": "#cde9dd",
-            "on-surface-muted": "#96aba0",
-            outline: "#2b453a",
+            brand: {
+              darkest: "#040d0c",
+              darker: "#061513",
+              dark: "#081d19",
+              card: "#0a231f",
+              cardBorder: "#123932",
+              cardBorderHover: "#1c544a",
+              emerald: "#10b981",
+              emeraldLight: "#34d399",
+              emeraldDim: "#064e3b",
+              accentYellow: "#f59e0b"
+            },
+            primary: {
+              DEFAULT: "#10b981",
+              light: "#34d399",
+              dark: "#064e3b"
+            },
+            secondary: {
+              DEFAULT: "#f59e0b",
+              light: "#fbbf24",
+              dark: "#b45309"
+            }
           },
           fontFamily: {
-            sans: ["Plus Jakarta Sans", "sans-serif"],
-            mono: ["Space Grotesk", "monospace"],
+            sans: ["Plus Jakarta Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+            mono: ["Space Grotesk", "monospace"]
           }
         }
       }
@@ -45,36 +55,102 @@
   </script>
 
   <style>
-    /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #011710; }
-    ::-webkit-scrollbar-thumb { background: #172e27; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #223931; }
+    /* Custom scrollbars for mobile & desktop */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #061513;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #123932;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #1c544a;
+    }
+
+    /* Touch optimization */
+    .tap-highlight-transparent {
+      -webkit-tap-highlight-color: transparent;
+    }
     
-    /* Markdown Styles */
-    .chat-prose { color: #cde9dd; font-size: 0.9375rem; line-height: 1.65; }
-    .chat-prose p { margin-bottom: 0.75rem; }
-    .chat-prose p:last-child { margin-bottom: 0; }
-    .chat-prose h1, .chat-prose h2, .chat-prose h3 { color: #4edea3; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; }
-    .chat-prose h1 { font-size: 1.25rem; }
-    .chat-prose h2 { font-size: 1.1rem; }
-    .chat-prose h3 { font-size: 1rem; }
-    .chat-prose ul, .chat-prose ol { margin-left: 1.25rem; margin-bottom: 0.75rem; }
+    .safe-bottom-padding {
+      padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 84px);
+    }
+
+    /* Markdown prose styles tailored for academic answers */
+    .chat-prose {
+      color: #e2e8f0;
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+    .chat-prose p {
+      margin-bottom: 0.75rem;
+    }
+    .chat-prose p:last-child {
+      margin-bottom: 0;
+    }
+    .chat-prose h1, .chat-prose h2, .chat-prose h3 {
+      color: #34d399;
+      font-weight: 700;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .chat-prose h1 { font-size: 1.15rem; }
+    .chat-prose h2 { font-size: 1.05rem; }
+    .chat-prose h3 { font-size: 0.95rem; }
+    .chat-prose ul, .chat-prose ol {
+      margin-left: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
     .chat-prose ul { list-style-type: disc; }
     .chat-prose ol { list-style-type: decimal; }
     .chat-prose li { margin-bottom: 0.25rem; }
-    .chat-prose strong { color: #ffffff; font-weight: 600; }
-    .chat-prose blockquote { border-left: 3px solid #ffb95f; padding-left: 0.75rem; margin: 0.75rem 0; color: #ffddb8; background: rgba(255, 185, 95, 0.08); padding-top: 0.25rem; padding-bottom: 0.25rem; border-radius: 0 0.5rem 0.5rem 0; }
-    .chat-prose code { font-family: 'Space Grotesk', monospace; font-size: 0.85em; background: #072018; padding: 0.15rem 0.35rem; border-radius: 0.25rem; color: #4edea3; border: 1px solid #172e27; }
-    .chat-prose pre { background: #00120c; padding: 0.75rem; border-radius: 0.75rem; overflow-x: auto; margin: 0.75rem 0; border: 1px solid #172e27; }
-    .chat-prose pre code { background: transparent; padding: 0; border: none; }
-    
-    /* Blinking Cursor while streaming */
+    .chat-prose strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .chat-prose blockquote {
+      border-left: 3px solid #f59e0b;
+      padding-left: 0.75rem;
+      margin: 0.75rem 0;
+      color: #fef3c7;
+      background: rgba(245, 158, 11, 0.08);
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .chat-prose code {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 0.85em;
+      background: #040d0c;
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #34d399;
+      border: 1px solid #123932;
+    }
+    .chat-prose pre {
+      background: #040d0c;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      border: 1px solid #123932;
+    }
+    .chat-prose pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+    }
+
+    /* Blinking cursor while streaming */
     .stream-cursor::after {
       content: '▋';
       display: inline-block;
       vertical-align: baseline;
-      color: #4edea3;
+      color: #34d399;
       animation: cursorBlink 0.8s infinite;
       margin-left: 2px;
       font-size: 0.9em;
@@ -95,268 +171,408 @@
   </style>
 </head>
 
-<body class="bg-surface text-on-surface font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-primary/20 selection:text-primary">
+<body class="bg-brand-darkest text-slate-100 font-sans antialiased h-screen flex justify-center selection:bg-emerald-500/30 selection:text-emerald-300">
 
-  <!-- ========================================================
-       TOP HEADER (Clean, Mobile-Friendly, Mode Toggler)
-       ======================================================== -->
-  <header class="h-14 sm:h-16 shrink-0 bg-surface/90 backdrop-blur-xl border-b border-outline/50 px-3 sm:px-6 flex items-center justify-between z-30">
-    <div class="flex items-center gap-2.5">
-      <!-- Logo UIN -->
-      <div class="w-8 h-8 rounded-lg bg-surface-high border border-primary/30 flex items-center justify-center p-1 shrink-0 shadow-inner">
-        <img alt="UIN Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCBiwgiZ6leWtYIu_MJ3JCVZWS-VJnLPIKqnZNMxFIxZ3pe28VqXglei1tE14HSfnDvVBt2-haQbm-EqEh0o4--CzkmD0K6MqAIOq6l5KNtyYn7cmWUuAZ6CzJQo5ecmOfrRuWJeQG4xJKHp3d9qAR92t5kCsaW6PingujQpucBs9i8DnoToEr9AnlwJjNddi-zN5PSzCn3SxNK247Ugcy9BJk-yby4OTiUu2OrmX_A1g"/>
-      </div>
-      <div>
-        <div class="flex items-center gap-1.5">
-          <span class="font-bold text-sm sm:text-base text-on-surface tracking-tight">AI Akademik UIN</span>
-          <span id="modelHeaderBadge" class="px-1.5 py-0.2 rounded-full bg-surface-high text-primary font-mono text-[10px] border border-primary/30 flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-            Auto Failover
-          </span>
-        </div>
-        <p class="hidden sm:block text-[11px] text-on-surface-muted font-mono">
-          UIN Sunan Kalijaga Yogyakarta
-        </p>
-      </div>
-    </div>
-
-    <!-- Center / Right Mode Switcher & Controls -->
-    <div class="flex items-center gap-1.5 sm:gap-2.5">
-      
-      <!-- MODE SWITCHER PILL (Tugas Biasa vs Riset Detail) -->
-      <div class="flex items-center p-0.5 sm:p-1 rounded-xl bg-surface-card border border-outline" role="tablist">
-        <button
-          id="modeBtnSimple"
-          onclick="setResponseMode('simple')"
-          class="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all bg-primary text-on-primary shadow-sm"
-          title="Jawaban ringkas, cepat kilat, langsung ke inti, sumber seperlunya">
-          <span class="material-symbols-outlined text-[15px] sm:text-[16px]">bolt</span>
-          <span>Tugas Biasa</span>
-        </button>
-        <button
-          id="modeBtnDetail"
-          onclick="setResponseMode('detail')"
-          class="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold text-on-surface-muted hover:text-on-surface transition-all"
-          title="Penjelasan komprehensif, telaah mendalam, metodologi, dan rujukan ilmiah lengkap">
-          <span class="material-symbols-outlined text-[15px] sm:text-[16px]">menu_book</span>
-          <span>Riset Detail</span>
-        </button>
-      </div>
-
-      <!-- Faculty selector pill (Dropdown) -->
-      <select id="facultySelect" onchange="updateFacultyContext()" class="hidden md:block bg-surface-card hover:bg-surface-high border border-outline text-xs text-on-surface rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-primary/50 transition-colors cursor-pointer max-w-[150px] truncate" title="Pilih Fakultas untuk konteks akademik">
-        <option value="Semua Fakultas">🌐 Umum UIN Suka</option>
-        <option value="Fakultas Sains dan Teknologi">🔬 Saintek (Sains &amp; Komputer)</option>
-        <option value="Fakultas Syari'ah dan Hukum">⚖️ FSH (Syari'ah &amp; Hukum)</option>
-        <option value="Fakultas Ekonomi dan Bisnis Islam">📈 FEBI (Ekonomi)</option>
-        <option value="Fakultas Tarbiyah dan Keguruan">🎓 FITK (Pendidikan)</option>
-        <option value="Fakultas Ushuluddin dan Pemikiran Islam">📖 FUPI (Ushuluddin)</option>
-        <option value="Fakultas Dakwah dan Komunikasi">🎙️ FDK (Dakwah &amp; Komunikasi)</option>
-        <option value="Fakultas Ilmu Sosial dan Humaniora">🤝 Fishum (Sosial &amp; Psikologi)</option>
-        <option value="Fakultas Adab dan Ilmu Budaya">🏛️ Adab (Sastra &amp; Budaya)</option>
-        <option value="Pascasarjana">📚 Pascasarjana</option>
-      </select>
-
-      <!-- New Chat Button -->
-      <button onclick="startNewChat()" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline text-xs text-on-surface flex items-center gap-1 transition-colors" title="Mulai Sesi Riset Baru">
-        <span class="material-symbols-outlined text-[18px] text-primary">add_comment</span>
-        <span class="hidden lg:inline font-medium">Sesi Baru</span>
-      </button>
-
-      <!-- Settings Modal Trigger -->
-      <button onclick="openApiKeyModal()" class="p-2 rounded-xl bg-surface-card hover:bg-surface-high border border-outline text-on-surface-muted hover:text-on-surface transition-colors" title="Pengaturan AI">
-        <span class="material-symbols-outlined text-[18px]">tune</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- ========================================================
-       CHAT MESSAGES VIEWPORT
-       ======================================================== -->
-  <main id="chatContainer" class="flex-1 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 max-w-4xl mx-auto w-full">
+  <!-- Mobile Viewport Container: fluid on mobile (max-w-md), elegantly scales up on desktop (md:max-w-3xl lg:max-w-4xl) -->
+  <div class="w-full max-w-md md:max-w-3xl lg:max-w-4xl h-screen bg-brand-darker flex flex-col relative md:border-x md:border-brand-cardBorder/60 shadow-2xl overflow-hidden">
     
-    <!-- Welcome Card & Quick Prompt Suggestions -->
-    <div id="welcomeCard" class="p-4 sm:p-6 rounded-2xl bg-surface-low border border-outline/70 shadow-lg space-y-4">
-      <div class="flex items-start gap-3">
-        <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-primary text-[22px]">verified</span>
-        </div>
-        <div>
-          <h2 class="font-bold text-base sm:text-lg text-on-surface">Chatbot Akademik UIN Sunan Kalijaga</h2>
-          <p class="text-xs sm:text-sm text-on-surface-muted mt-0.5 leading-relaxed">
-            Dilengkapi <strong>Auto-Failover System</strong> (otomatis mengalihkan ke model cadangan bila server sedang sibuk) dan <strong>Presisi Ranah Ilmu</strong> (sains dijawab murni saintifik, agama dijawab dengan dalil sahih).
-          </p>
-        </div>
-      </div>
-
-      <!-- Mode explanation banner -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-        <div onclick="setResponseMode('simple')" class="p-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 cursor-pointer transition-all flex flex-col gap-1">
-          <div class="flex items-center gap-1.5 text-primary font-bold text-xs">
-            <span class="material-symbols-outlined text-[16px]">bolt</span>
-            <span>Mode Tugas Biasa (Super Cepat)</span>
+    <!-- ========================================================
+         TOPBAR (Mobile Reference UI with Faculty & Mode Controls)
+         ======================================================== -->
+    <header class="sticky top-0 z-30 bg-brand-darker/95 backdrop-blur-md border-b border-brand-cardBorder px-3.5 sm:px-5 pt-3 pb-2.5 transition-all shrink-0">
+      <div class="flex items-center justify-between gap-2">
+        
+        <!-- Logo and Title Block -->
+        <div class="flex items-center space-x-2.5 overflow-hidden">
+          <div class="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-inner">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
           </div>
-          <p class="text-[11px] text-on-surface-muted leading-relaxed">
-            Jawaban <strong>singkat, padat, dan langsung ke inti</strong>. Sumber disertakan seperlunya sesuai bidang ilmu tugas kuliah.
-          </p>
-        </div>
-
-        <div onclick="setResponseMode('detail')" class="p-3 rounded-xl border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 cursor-pointer transition-all flex flex-col gap-1">
-          <div class="flex items-center gap-1.5 text-secondary font-bold text-xs">
-            <span class="material-symbols-outlined text-[16px]">menu_book</span>
-            <span>Mode Riset Detail</span>
+          <div class="truncate">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-bold text-white tracking-tight truncate">AI Akademik UIN</span>
+              <span id="modelHeaderBadge" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-mono font-medium bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
+                Auto Failover
+              </span>
+            </div>
+            <p class="text-[10px] text-gray-400 truncate">UIN Sunan Kalijaga Yogyakarta</p>
           </div>
-          <p class="text-[11px] text-on-surface-muted leading-relaxed">
-            Pembahasan <strong>mendalam &amp; komprehensif</strong>, teori akademik spesifik, metodologi, dan rujukan jurnal ilmiah lengkap.
-          </p>
+        </div>
+
+        <!-- Quick Top Action Buttons -->
+        <div class="flex items-center space-x-1.5 shrink-0">
+          <button
+            onclick="startNewChat()"
+            id="btn-new-chat"
+            type="button"
+            aria-label="Sesi Baru"
+            class="h-8 px-2.5 rounded-lg bg-brand-card hover:bg-brand-emeraldDim/60 text-xs font-medium text-emerald-300 border border-brand-cardBorder flex items-center gap-1 tap-highlight-transparent active:scale-95 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="text-[11px] hidden xs:inline">Sesi</span> Baru
+          </button>
+
+          <button
+            onclick="openApiKeyModal()"
+            id="btn-settings-toggle"
+            type="button"
+            aria-label="Pengaturan"
+            class="h-8 w-8 rounded-lg bg-brand-card text-gray-400 hover:text-white border border-brand-cardBorder flex items-center justify-center tap-highlight-transparent active:scale-95 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
         </div>
       </div>
 
-      <!-- Quick Suggested Prompts across different disciplines -->
-      <div class="pt-2 border-t border-outline/40">
-        <span class="text-[11px] font-mono text-secondary font-semibold uppercase tracking-wider block mb-2">
-          💡 Contoh Pertanyaan Lintas Ranah Ilmu:
-        </span>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <!-- Non-religious science / tech -->
-          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-primary transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px] text-primary">terminal</span>
-            <span>Jelaskan cara kerja algoritma QuickSort dan kompleksitas waktunya!</span>
+      <!-- Quick Faculty Selector & Mode Sub-bar -->
+      <div class="mt-2.5 flex items-center justify-between gap-2 pt-2 border-t border-brand-cardBorder/50">
+        <button
+          onclick="toggleFacultyDropdown()"
+          id="facultyDropdownBtn"
+          type="button"
+          class="flex-1 flex items-center justify-between bg-brand-dark hover:bg-brand-card text-xs text-slate-200 px-3 py-1.5 rounded-lg border border-brand-cardBorder active:bg-brand-card transition-all">
+          <div class="flex items-center space-x-2 truncate">
+            <span id="facultyIcon" class="text-emerald-400 text-sm">🌐</span>
+            <span id="selectedFacultyText" class="font-medium truncate text-[11px]">Umum UIN Suka</span>
+          </div>
+          <svg id="facultyChevron" class="w-3.5 h-3.5 text-gray-400 ml-1.5 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19.5 8.25l-7.5 7.5-7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+
+        <div class="flex bg-brand-dark p-0.5 rounded-lg border border-brand-cardBorder text-[10px]">
+          <button
+            id="toggleTugasBtn"
+            onclick="setResponseMode('simple')"
+            class="flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500 text-brand-darkest font-semibold transition-all">
+            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+            <span>Tugas</span>
           </button>
-          <!-- Non-religious science / biology -->
-          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-primary transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px] text-primary">biotech</span>
-            <span>Jelaskan mekanisme sintesis protein dalam biologi sel!</span>
-          </button>
-          <!-- Islamic topic -->
-          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-secondary transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px] text-secondary">gavel</span>
-            <span>Hukum Paylater dan Akad Qardh menurut Fikih Muamalah</span>
-          </button>
-          <!-- Integrative topic -->
-          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-secondary transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px] text-secondary">hub</span>
-            <span>Konsep Integrasi-Interkoneksi Amin Abdullah dalam Skripsi</span>
+          <button
+            id="toggleRisetBtn"
+            onclick="setResponseMode('detail')"
+            class="flex items-center gap-1 px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>Riset</span>
           </button>
         </div>
       </div>
+    </header>
+
+    <!-- FACULTY MODAL -->
+    <div id="facultyModal" class="hidden absolute top-28 left-3.5 right-3.5 z-40 bg-[#07201c] border border-emerald-500/40 rounded-xl shadow-2xl overflow-hidden backdrop-blur-md transition-all">
+      <div class="px-3.5 py-2 bg-brand-cardBorder/40 border-b border-brand-cardBorder flex items-center justify-between text-[11px] text-gray-300 font-medium">
+        <span>PILIH RANAH FAKULTAS</span>
+        <button onclick="toggleFacultyDropdown(false)" class="text-gray-400 hover:text-white text-xs px-1.5 py-0.5 rounded">✕</button>
+      </div>
+      <ul class="py-1 text-xs max-h-72 overflow-y-auto divide-y divide-brand-cardBorder/30">
+        <li>
+          <button onclick="selectFaculty('Semua Fakultas', '🌐', 'Umum UIN Suka')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-emerald-300 font-medium bg-emerald-950/40 transition-colors" data-value="Semua Fakultas">
+            <span class="text-sm">🌐</span>
+            <span>Umum UIN Suka</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Sains dan Teknologi', '🔬', 'Saintek (Sains & Komputer)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Sains dan Teknologi">
+            <span class="text-sm">🔬</span>
+            <span>Saintek (Sains & Komputer)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Syari\'ah dan Hukum', '⚖️', 'FSH (Syari\'ah & Hukum)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Syari'ah dan Hukum">
+            <span class="text-sm">⚖️</span>
+            <span>FSH (Syari'ah & Hukum)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Ekonomi dan Bisnis Islam', '📈', 'FEBI (Ekonomi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ekonomi dan Bisnis Islam">
+            <span class="text-sm">📈</span>
+            <span>FEBI (Ekonomi)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Tarbiyah dan Keguruan', '🎓', 'FITK (Pendidikan)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Tarbiyah dan Keguruan">
+            <span class="text-sm">🎓</span>
+            <span>FITK (Pendidikan)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Ushuluddin dan Pemikiran Islam', '📖', 'FUPI (Ushuluddin)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ushuluddin dan Pemikiran Islam">
+            <span class="text-sm">📖</span>
+            <span>FUPI (Ushuluddin)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Dakwah dan Komunikasi', '🎙️', 'FDK (Dakwah & Komunikasi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Dakwah dan Komunikasi">
+            <span class="text-sm">🎙️</span>
+            <span>FDK (Dakwah & Komunikasi)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Ilmu Sosial dan Humaniora', '🧠', 'Fishum (Sosial & Psikologi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ilmu Sosial dan Humaniora">
+            <span class="text-sm">🧠</span>
+            <span>Fishum (Sosial & Psikologi)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Fakultas Adab dan Ilmu Budaya', '🏛️', 'Adab (Sastra & Budaya)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Adab dan Ilmu Budaya">
+            <span class="text-sm">🏛️</span>
+            <span>Adab (Sastra & Budaya)</span>
+          </button>
+        </li>
+        <li>
+          <button onclick="selectFaculty('Pascasarjana', '📚', 'Pascasarjana')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Pascasarjana">
+            <span class="text-sm">📚</span>
+            <span>Pascasarjana</span>
+          </button>
+        </li>
+      </ul>
     </div>
 
-    <!-- Messages Container -->
-    <div id="messagesList" class="space-y-4"></div>
+    <!-- MAIN CHAT -->
+    <main id="chatContainer" class="flex-1 px-3.5 sm:px-5 py-4 space-y-4 overflow-y-auto safe-bottom-padding">
+      <section id="welcomeCard" class="space-y-3.5">
+        <div class="p-4 rounded-2xl bg-gradient-to-b from-[#0a2722] to-[#071b18] border border-brand-cardBorder relative overflow-hidden shadow-lg">
+          <div class="absolute -right-12 -top-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-900/40 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-sm sm:text-base font-semibold text-white leading-snug tracking-tight">
+                Chatbot Akademik UIN Sunan Kalijaga
+              </h1>
+              <p class="mt-1 text-xs text-gray-300 leading-relaxed">
+                Dilengkapi <strong class="text-emerald-300 font-semibold">Auto-Failover System</strong> (otomatis mengalihkan ke model cadangan bila server sedang sibuk) dan <strong class="text-emerald-300 font-semibold">Presisi Ranah Ilmu</strong> (sains dijawab murni saintifik, agama dijawab dengan dalil sahih).
+              </p>
+            </div>
+          </div>
+        </div>
 
-    <!-- Loading Indicator (Only shown before first token arrives) -->
-    <div id="loadingIndicator" class="hidden flex items-start gap-3">
-      <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
-        <span class="material-symbols-outlined text-primary text-[18px] animate-spin">autorenew</span>
-      </div>
-      <div class="p-3 rounded-2xl bg-surface-card border border-outline/60 flex items-center gap-2 shadow-md">
-        <span id="loadingStatusText" class="text-xs text-on-surface-muted font-mono">Menghubungkan ke Gemini...</span>
-        <div class="w-1.5 h-1.5 rounded-full bg-primary typing-dot"></div>
-        <div class="w-1.5 h-1.5 rounded-full bg-primary typing-dot"></div>
-        <div class="w-1.5 h-1.5 rounded-full bg-primary typing-dot"></div>
-      </div>
-    </div>
-  </main>
+        <div class="space-y-2.5">
+          <div
+            id="card-mode-tugas"
+            onclick="setResponseMode('simple')"
+            class="p-3.5 rounded-xl bg-[#09221e] border-2 border-emerald-500/70 shadow-sm relative transition-all cursor-pointer">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center space-x-2">
+                <span class="text-emerald-400 text-sm">⚡</span>
+                <span class="text-xs font-semibold text-emerald-300">Mode Tugas Biasa (Super Cepat)</span>
+              </div>
+              <span id="badge-tugas" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500 text-brand-darkest font-bold uppercase tracking-wider">Aktif</span>
+            </div>
+            <p class="text-[11px] text-gray-300 leading-normal">
+              Jawaban <strong class="text-white font-medium">singkat, padat, dan langsung ke inti</strong>. Sumber disertakan seperlunya sesuai bidang ilmu tugas kuliah.
+            </p>
+          </div>
 
-  <!-- ========================================================
-       BOTTOM INPUT BAR (Mobile & Desktop Responsive)
-       ======================================================== -->
-  <footer class="shrink-0 bg-surface/95 backdrop-blur-xl border-t border-outline/50 p-2.5 sm:p-4 z-20">
-    <div class="max-w-4xl mx-auto w-full">
-      <form onsubmit="handleChatSubmit(event)" class="relative flex items-center bg-surface-card rounded-2xl border border-outline focus-within:border-primary/50 shadow-lg px-2 sm:px-3 py-1.5 transition-all">
-        <!-- Input field -->
+          <div
+            id="card-mode-riset"
+            onclick="setResponseMode('detail')"
+            class="p-3.5 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-brand-cardBorderHover shadow-sm transition-all cursor-pointer">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center space-x-2">
+                <span class="text-amber-400 text-sm">📖</span>
+                <span class="text-xs font-semibold text-slate-200">Mode Riset Detail</span>
+              </div>
+              <span id="badge-riset" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-brand-darkest font-bold uppercase tracking-wider">Aktif</span>
+            </div>
+            <p class="text-[11px] text-gray-400 leading-normal">
+              Pembahasan <strong class="text-slate-300 font-medium">mendalam &amp; komprehensif</strong>, teori akademik spesifik, metodologi, dan rujukan jurnal ilmiah lengkap.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center space-x-1.5 px-1">
+            <span class="text-xs">💡</span>
+            <h2 class="text-[10px] font-bold tracking-wider text-amber-300/90 uppercase font-mono">
+              CONTOH PERTANYAAN LINTAS RANAH ILMU:
+            </h2>
+          </div>
+
+          <button
+            onclick="sendQuickPrompt('Jelaskan cara kerja algoritma QuickSort dan kompleksitas waktunya!')"
+            class="w-full text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
+            <div class="w-7 h-7 rounded-lg bg-emerald-950/60 border border-brand-cardBorder flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect height="16" rx="2" width="20" x="2" y="4"></rect>
+                <path d="m10 10-2 2 2 2m4-4 2 2-2 2"></path>
+              </svg>
+            </div>
+            <span class="text-xs text-gray-200 leading-snug">
+              Jelaskan cara kerja algoritma QuickSort dan kompleksitas waktunya!
+            </span>
+          </button>
+
+          <button
+            onclick="sendQuickPrompt('Jelaskan mekanisme sintesis protein dalam biologi sel!')"
+            class="w-full text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
+            <div class="w-7 h-7 rounded-lg bg-emerald-950/60 border border-brand-cardBorder flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+            <span class="text-xs text-gray-200 leading-snug">
+              Jelaskan mekanisme sintesis protein dalam biologi sel!
+            </span>
+          </button>
+
+          <button
+            onclick="sendQuickPrompt('Hukum Paylater dan Akad Qardh menurut Fikih Muamalah')"
+            class="w-full text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
+            <div class="w-7 h-7 rounded-lg bg-emerald-950/60 border border-brand-cardBorder flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path>
+                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path>
+                <path d="M7 21h10"></path>
+                <path d="M12 3v18"></path>
+                <path d="M3 7h18"></path>
+              </svg>
+            </div>
+            <span class="text-xs text-gray-200 leading-snug">
+              Hukum Paylater dan Akad Qardh menurut Fikih Muamalah
+            </span>
+          </button>
+
+          <button
+            onclick="sendQuickPrompt('Konsep Integrasi-Interkoneksi Amin Abdullah dalam Skripsi')"
+            class="w-full text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
+            <div class="w-7 h-7 rounded-lg bg-emerald-950/60 border border-brand-cardBorder flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"></path>
+              </svg>
+            </div>
+            <span class="text-xs text-gray-200 leading-snug">
+              Konsep Integrasi-Interkoneksi Amin Abdullah dalam Skripsi
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <div id="messagesList" class="space-y-4"></div>
+
+      <div id="loadingIndicator" class="hidden flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-950/70 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow">
+          <span class="material-symbols-outlined text-emerald-400 text-[18px] animate-spin">autorenew</span>
+        </div>
+        <div class="p-3 rounded-2xl bg-brand-card border border-brand-cardBorder flex items-center gap-2 shadow-md">
+          <span id="loadingStatusText" class="text-xs text-gray-400 font-mono">Menghubungkan ke Gemini...</span>
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 typing-dot"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- BOTTOM INPUT BAR -->
+    <div class="sticky bottom-0 z-30 bg-[#051311]/95 backdrop-blur-md border-t border-brand-cardBorder px-3.5 pt-2.5 pb-3 safe-area-bottom shadow-2xl shrink-0">
+      <form onsubmit="handleChatSubmit(event)" class="relative flex items-center bg-[#09221e] border border-brand-cardBorder focus-within:border-emerald-500/70 rounded-full px-3 py-1.5 shadow-inner transition-all">
         <textarea
           id="userInput"
           rows="1"
-          placeholder="Tanyakan algoritma, matematika, sains, sosiologi, fikih, atau metodologi skripsi..."
-          class="w-full bg-transparent text-xs sm:text-sm text-on-surface placeholder:text-on-surface-muted/50 focus:outline-none resize-none py-2 px-1 max-h-32 min-h-[38px]"
+          placeholder="Tanyakan algoritma, matematika, sains, fikih..."
+          class="w-full bg-transparent text-xs text-white placeholder-gray-400 focus:outline-none focus:ring-0 border-0 p-0 leading-5 resize-none max-h-28"
           onkeydown="handleKeyDown(event)"
           oninput="autoResizeTextarea(this)"></textarea>
 
-        <!-- Send / Stop Button -->
         <button
           type="submit"
           id="sendButton"
-          class="ml-2 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-on-primary font-bold flex items-center justify-center shrink-0 shadow-md hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Kirim Pertanyaan">
-          <span id="sendBtnIcon" class="material-symbols-outlined text-[20px]">arrow_upward</span>
+          aria-label="Kirim Pesan"
+          class="w-8 h-8 rounded-full bg-emerald-400 hover:bg-emerald-300 text-brand-darkest flex items-center justify-center shrink-0 ml-1.5 tap-highlight-transparent active:scale-95 shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
+          <svg id="sendBtnIcon" class="w-4 h-4 font-bold stroke-[2.6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
         </button>
       </form>
-      
-      <!-- Footer Metadata & Active Mode Status Badge -->
-      <div class="flex items-center justify-between mt-1.5 px-1 text-[10px] sm:text-[11px] text-on-surface-muted font-mono">
-        <div class="flex items-center gap-2">
-          <span>Mode: <strong id="activeModeLabel" class="text-primary font-semibold">⚡ Tugas Biasa (Cepat)</strong></span>
-          <span class="text-outline">•</span>
-          <span class="hidden sm:inline">Engine: <span id="activeModelFooter" class="text-on-surface font-semibold text-primary">Auto-Failover Active</span></span>
+
+      <div class="mt-2 flex items-center justify-between text-[10px] text-gray-400 px-1 font-normal tracking-tight font-mono">
+        <div class="flex items-center space-x-1 truncate max-w-[65%]">
+          <span>Mode:</span>
+          <span id="activeModeLabel" class="text-emerald-400 font-medium truncate">⚡ Tugas Biasa (Cepat)</span>
+          <span class="text-gray-500">·</span>
+          <span class="text-emerald-400 font-medium truncate">Failover ON</span>
         </div>
-        <button onclick="toggleResponseMode()" class="text-secondary hover:underline cursor-pointer">
-          Ganti ke <span id="switchModeSuggestion">Riset Detail</span>
+        <button
+          id="switchModeLink"
+          type="button"
+          onclick="toggleResponseMode()"
+          class="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 shrink-0">
+          Ganti ke Riset Detail
         </button>
       </div>
     </div>
-  </footer>
 
-  <!-- ========================================================
-       MODAL: API Key & Model Settings
-       ======================================================== -->
+  </div>
+
+  <!-- MODAL: Settings -->
   <div id="apiKeyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div onclick="event.stopPropagation()" class="w-full max-w-md bg-surface-low border border-outline rounded-2xl p-5 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-outline/40 pb-3">
+    <div onclick="event.stopPropagation()" class="w-full max-w-md bg-[#07201c] border border-brand-cardBorder rounded-2xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-brand-cardBorder/60 pb-3">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
-          <h3 class="font-bold text-base text-on-surface">Pengaturan Model &amp; API Key</h3>
+          <span class="material-symbols-outlined text-emerald-400 text-[22px]">tune</span>
+          <h3 class="font-bold text-sm text-white">Pengaturan Model &amp; API Key</h3>
         </div>
-        <button onclick="closeApiKeyModal()" class="text-on-surface-muted hover:text-on-surface p-1">
+        <button onclick="closeApiKeyModal()" class="text-gray-400 hover:text-white p-1">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
 
-      <!-- Auto Failover Info -->
-      <div class="p-3 rounded-xl bg-surface-card border border-primary/30 flex items-start gap-2.5">
-        <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">shield</span>
-        <div class="text-[11px] text-on-surface-muted leading-relaxed">
-          <strong class="text-primary">Auto-Failover Aktif:</strong> Bila server utama sibuk (*High Demand / 503*), sistem otomatis mengalihkan ke model alternatif tercepat (<code class="text-primary">3.5 Flash Lite</code> &rarr; <code class="text-primary">3.5 Flash</code> &rarr; <code class="text-primary">Flash Latest</code> &rarr; <code class="text-primary">3.8 Flash</code>) tanpa henti.
+      <div class="p-3 rounded-xl bg-brand-dark border border-emerald-500/30 flex items-start gap-2.5">
+        <span class="material-symbols-outlined text-emerald-400 text-[20px] shrink-0 mt-0.5">shield</span>
+        <div class="text-[11px] text-gray-300 leading-relaxed">
+          <strong class="text-emerald-300">Auto-Failover Aktif:</strong> Bila server sedang sibuk (*High Demand / 503*), sistem otomatis mengalihkan ke model alternatif tercepat (<code class="text-emerald-300">3.5 Flash Lite</code> &rarr; <code class="text-emerald-300">3.5 Flash</code> &rarr; <code class="text-emerald-300">Flash Latest</code> &rarr; <code class="text-emerald-300">3.8 Flash</code>) tanpa henti.
         </div>
       </div>
 
       <div class="space-y-2">
-        <label for="apiKeyInput" class="block text-xs font-semibold text-on-surface">Google Gemini API Key:</label>
+        <label for="apiKeyInput" class="block text-xs font-semibold text-slate-200">Google Gemini API Key:</label>
         <input
           type="password"
           id="apiKeyInput"
           placeholder="Masukkan Gemini API Key..."
-          class="w-full bg-surface-card border border-outline text-xs text-on-surface rounded-xl px-3 py-2.5 font-mono focus:outline-none focus:border-primary/50"/>
-        <p class="text-[11px] text-on-surface-muted leading-relaxed">
+          class="w-full bg-brand-dark border border-brand-cardBorder text-xs text-white rounded-xl px-3 py-2.5 font-mono focus:outline-none focus:border-emerald-500/60"/>
+        <p class="text-[11px] text-gray-400 leading-relaxed">
           Tersimpan aman di peramban lokal (Local Storage) Anda.
         </p>
       </div>
 
       <div class="flex items-center justify-end gap-2 pt-2">
-        <button onclick="closeApiKeyModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-on-surface-muted hover:text-on-surface bg-surface-card border border-outline">
+        <button onclick="closeApiKeyModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white bg-brand-dark border border-brand-cardBorder">
           Batal
         </button>
-        <button onclick="saveApiKey()" class="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-on-primary hover:brightness-110 shadow-md">
+        <button onclick="saveApiKey()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-brand-darkest hover:bg-emerald-400 shadow-md">
           Simpan Pengaturan
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-surface-high border border-primary/40 text-on-surface px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold transition-all duration-300 opacity-0 pointer-events-none translate-y-2">
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0a231f] border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold transition-all duration-300 opacity-0 pointer-events-none translate-y-2 font-mono">
     Teks tersalin!
   </div>
 
-  <!-- ========================================================
-       JAVASCRIPT LOGIC (Gemini API & Auto-Failover Streaming Engine)
-       ======================================================== -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Config & Storage
     const DEFAULT_API_KEY = atob("QVEuQWI4Uk42S2NtNTJSU18xTXVCYmdGTFp2NjNLLUFwVTU0T1lBSGh4V0RVV09lSzhxcUE=");
     
-    // Priority Model Queue for Auto-Failover (Fastest & Most Available first)
     const MODEL_FALLBACK_QUEUE = [
       "gemini-3.5-flash-lite",
       "gemini-3.5-flash",
@@ -365,12 +581,11 @@
       "gemini-3.8-flash"
     ];
     
-    // Application State
-    let currentMode = "simple"; // "simple" (Tugas Biasa) or "detail" (Riset Detail)
-    let conversationHistory = []; // { role: "user" | "model", parts: [{ text: "..." }] }
+    let currentMode = "simple";
+    let selectedFaculty = "Semua Fakultas";
+    let conversationHistory = [];
     let activeAbortController = null;
 
-    // Init API Key
     function getApiKey() {
       return localStorage.getItem("uin_gemini_api_key") || DEFAULT_API_KEY;
     }
@@ -380,68 +595,107 @@
     function openApiKeyModal() {
       document.getElementById("apiKeyModal").classList.remove("hidden");
     }
+
     function closeApiKeyModal() {
       document.getElementById("apiKeyModal").classList.add("hidden");
     }
+
     function saveApiKey() {
       const val = document.getElementById("apiKeyInput").value.trim();
       if (val) {
         localStorage.setItem("uin_gemini_api_key", val);
+        showToast("API Key berhasil disimpan!");
+      } else {
+        localStorage.removeItem("uin_gemini_api_key");
+        showToast("Menggunakan API Key default.");
       }
-      showToast("Pengaturan berhasil disimpan!");
       closeApiKeyModal();
     }
 
-    // Response Mode Switching Logic
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.remove("opacity-0", "translate-y-2", "pointer-events-none");
+      toast.classList.add("opacity-100", "translate-y-0");
+      setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-y-0");
+        toast.classList.add("opacity-0", "translate-y-2", "pointer-events-none");
+      }, 2500);
+    }
+
+    function toggleFacultyDropdown(forceState) {
+      const modal = document.getElementById("facultyModal");
+      const chevron = document.getElementById("facultyChevron");
+      const shouldOpen = forceState !== undefined ? forceState : modal.classList.contains("hidden");
+      
+      if (shouldOpen) {
+        modal.classList.remove("hidden");
+        chevron.classList.add("rotate-180");
+      } else {
+        modal.classList.add("hidden");
+        chevron.classList.remove("rotate-180");
+      }
+    }
+
+    function selectFaculty(value, icon, label) {
+      selectedFaculty = value;
+      document.getElementById("facultyIcon").textContent = icon;
+      document.getElementById("selectedFacultyText").textContent = label;
+
+      document.querySelectorAll(".faculty-opt").forEach(btn => {
+        if (btn.getAttribute("data-value") === value) {
+          btn.classList.add("bg-emerald-950/40", "text-emerald-300", "font-medium");
+          btn.classList.remove("text-slate-200");
+        } else {
+          btn.classList.remove("bg-emerald-950/40", "text-emerald-300", "font-medium");
+          btn.classList.add("text-slate-200");
+        }
+      });
+
+      toggleFacultyDropdown(false);
+      showToast(`Ranah Fakultas: ${label}`);
+    }
+
     function setResponseMode(mode) {
       currentMode = mode;
-      const btnSimple = document.getElementById("modeBtnSimple");
-      const btnDetail = document.getElementById("modeBtnDetail");
-      const activeLabel = document.getElementById("activeModeLabel");
-      const switchSuggestion = document.getElementById("switchModeSuggestion");
-      const loadingText = document.getElementById("loadingStatusText");
+      const toggleTugas = document.getElementById("toggleTugasBtn");
+      const toggleRiset = document.getElementById("toggleRisetBtn");
+      const cardTugas = document.getElementById("card-mode-tugas");
+      const cardRiset = document.getElementById("card-mode-riset");
+      const badgeTugas = document.getElementById("badge-tugas");
+      const badgeRiset = document.getElementById("badge-riset");
+      const activeModeLabel = document.getElementById("activeModeLabel");
+      const switchModeLink = document.getElementById("switchModeLink");
 
       if (mode === "simple") {
-        btnSimple.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all bg-primary text-on-primary shadow-sm";
-        btnDetail.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold text-on-surface-muted hover:text-on-surface transition-all";
-        activeLabel.innerHTML = `<span class="text-primary font-bold">⚡ Tugas Biasa (Cepat)</span>`;
-        switchSuggestion.textContent = "Riset Detail";
-        loadingText.textContent = "Menghubungkan Gemini Turbo...";
-        showToast("Mode Tugas Biasa: Respon singkat kilat (< 1 detik).");
+        toggleTugas.className = "flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500 text-brand-darkest font-semibold transition-all";
+        toggleRiset.className = "flex items-center gap-1 px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all";
+        
+        cardTugas.className = "p-3.5 rounded-xl bg-[#09221e] border-2 border-emerald-500/70 shadow-sm relative transition-all cursor-pointer";
+        cardRiset.className = "p-3.5 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-brand-cardBorderHover shadow-sm transition-all cursor-pointer";
+        badgeTugas.classList.remove("hidden");
+        badgeRiset.classList.add("hidden");
+
+        activeModeLabel.textContent = "⚡ Tugas Biasa (Cepat)";
+        activeModeLabel.className = "text-emerald-400 font-medium truncate";
+        switchModeLink.textContent = "Ganti ke Riset Detail";
       } else {
-        btnDetail.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all bg-secondary text-surface shadow-sm font-bold";
-        btnSimple.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold text-on-surface-muted hover:text-on-surface transition-all";
-        activeLabel.innerHTML = `<span class="text-secondary font-bold">📚 Riset Detail (Komprehensif)</span>`;
-        switchSuggestion.textContent = "Tugas Biasa";
-        loadingText.textContent = "Menganalisis khazanah ilmiah & rujukan...";
-        showToast("Mode Riset Detail: Jawaban mendalam & rujukan lengkap.");
+        toggleRiset.className = "flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-400 text-brand-darkest font-semibold transition-all";
+        toggleTugas.className = "flex items-center gap-1 px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all";
+        
+        cardRiset.className = "p-3.5 rounded-xl bg-[#09221e] border-2 border-amber-400/80 shadow-sm relative transition-all cursor-pointer";
+        cardTugas.className = "p-3.5 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-brand-cardBorderHover shadow-sm transition-all cursor-pointer";
+        badgeRiset.classList.remove("hidden");
+        badgeTugas.classList.add("hidden");
+
+        activeModeLabel.textContent = "📖 Mode Riset Detail";
+        activeModeLabel.className = "text-amber-400 font-medium truncate";
+        switchModeLink.textContent = "Ganti ke Tugas Biasa";
       }
     }
 
     function toggleResponseMode() {
       setResponseMode(currentMode === "simple" ? "detail" : "simple");
-    }
-
-    function updateFacultyContext() {
-      const faculty = document.getElementById("facultySelect").value;
-      showToast(`Konteks akademik disesuaikan: ${faculty}`);
-    }
-
-    function autoResizeTextarea(textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = Math.min(textarea.scrollHeight, 128) + "px";
-    }
-
-    function handleKeyDown(e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleChatSubmit(e);
-      }
-    }
-
-    function sendQuickPrompt(text) {
-      document.getElementById("userInput").value = text;
-      handleChatSubmit(new Event("submit"));
     }
 
     function startNewChat() {
@@ -453,216 +707,220 @@
       document.getElementById("messagesList").innerHTML = "";
       document.getElementById("welcomeCard").classList.remove("hidden");
       document.getElementById("userInput").value = "";
-      document.getElementById("userInput").focus();
-      showToast("Sesi riset baru dimulai.");
+      autoResizeTextarea(document.getElementById("userInput"));
+      showToast("Sesi baru dimulai!");
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      toast.textContent = msg;
-      toast.classList.remove("opacity-0", "pointer-events-none", "translate-y-2");
-      toast.classList.add("opacity-100", "translate-y-0");
-      setTimeout(() => {
-        toast.classList.remove("opacity-100", "translate-y-0");
-        toast.classList.add("opacity-0", "pointer-events-none", "translate-y-2");
-      }, 2500);
+    function sendQuickPrompt(promptText) {
+      document.getElementById("userInput").value = promptText;
+      autoResizeTextarea(document.getElementById("userInput"));
+      handleChatSubmit(new Event("submit"));
     }
 
-    function copyMessage(btn) {
-      const card = btn.closest(".message-card");
-      const content = card.querySelector(".chat-prose").innerText;
-      navigator.clipboard.writeText(content).then(() => {
-        showToast("Teks jawaban berhasil disalin!");
-      });
+    function autoResizeTextarea(el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 120) + "px";
     }
 
-    // Append User Message to UI
-    function appendUserMessage(text) {
-      document.getElementById("welcomeCard").classList.add("hidden");
-      const list = document.getElementById("messagesList");
-
-      const msgDiv = document.createElement("div");
-      msgDiv.className = "message-card flex items-start gap-2.5 sm:gap-3 justify-end";
-      msgDiv.innerHTML = `
-        <div class="max-w-[85%] sm:max-w-[75%] p-3 sm:p-4 rounded-2xl bg-surface-high border border-outline text-on-surface shadow-md">
-          <p class="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">${escapeHtml(text)}</p>
-        </div>
-        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-secondary/20 border border-secondary/40 text-secondary flex items-center justify-center shrink-0 text-xs font-bold">
-          U
-        </div>
-      `;
-
-      list.appendChild(msgDiv);
-      const chatContainer = document.getElementById("chatContainer");
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+    function handleKeyDown(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        handleChatSubmit(event);
+      }
     }
 
-    // Create Initial Assistant Message Node for Streaming
-    function createAssistantStreamingNode(modeTag, modelUsed) {
-      document.getElementById("welcomeCard").classList.add("hidden");
-      const list = document.getElementById("messagesList");
+    function buildSystemPrompt() {
+      const isSimple = currentMode === "simple";
+      
+      let base = `Anda adalah "AI Akademik UIN Sunan Kalijaga", asisten cerdas akademik resmi sivitas akademika Universitas Islam Negeri (UIN) Sunan Kalijaga Yogyakarta.
 
-      const msgDiv = document.createElement("div");
-      msgDiv.className = "message-card flex items-start gap-2.5 sm:gap-3 justify-start";
+PERATURAN MUTLAK BIDANG ILMU & INTEGRASI KEILMUAN:
+1. SESUAIKAN DENGAN DISIPLIN ILMU YANG DITANYAKAN:
+   - Jika pertanyaan mengenai SAINS, MATEMATIKA, ILMU KOMPUTER, CODING, TEKNIK, FISIKA, BIOLOGI, atau ilmu eksak umum: JAWAB SECARA MURNI TEKNIS & SAINTIFIK. DILARANG KERAS memaksakan ayat Al-Qur'an, Hadis, dalil syariah, atau istilah Islam jika topik dan pertanyaannya TIDAK memintanya. Sumber rujukan wajib berasal dari buku teks sains, dokumentasi resmi, atau jurnal ilmiah sains standar (IEEE, ACM, Nature, Elsevier).
+   - Jika pertanyaan mengenai ILMU AGAMA ISLAM (Fikih, Hadis, Ushuluddin, Tafsir, Syari'ah, Hukum Islam, Ekonomi Syariah): Gunakan metodologi studi Islam yang sahih, sertakan dalil naqli/rujukan ulama mu'tabar serta jurnal studi Islam (Al-Jami'ah, Al-Ahwal, JPI UIN Suka).
+   - Jika pertanyaan eksplisit meminta paradigma "Integrasi-Interkoneksi" ala Prof. M. Amin Abdullah atau skripsi interdisipliner: Baru lakukan dialog antara sains modern dan nilai-nilai filosofis/etika Islam.`;
 
-      const modeBadge = modeTag === "simple" 
-        ? `<span class="px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[10px] font-semibold flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">bolt</span> Tugas Biasa</span>`
-        : `<span class="px-2 py-0.5 rounded-md bg-secondary/15 border border-secondary/30 text-secondary text-[10px] font-semibold flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">menu_book</span> Riset Detail</span>`;
+      if (isSimple) {
+        base += `\n\nMODE SAAT INI: "MODE TUGAS BIASA (SINGKAT & CEPAT)"
+ATURAN MODE TUGAS BIASA:
+- Jawab dengan SINGKAT, PADAT, dan LANGSUNG KE INTI persoalan tugas kuliah.
+- HINDARI pengantar atau basa-basi berlebih.
+- Berikan penjelasan ringkas (bullet points atau langkah-langkah konkret).
+- Sumber rujukan cukup seperlunya (1-2 sumber utama yang relevan sesuai bidang ilmu di atas).
+- Waktu generasi harus super cepat dan efisien.`;
+      } else {
+        base += `\n\nMODE SAAT INI: "MODE RISET DETAIL (MENDALAM & KOMPREHENSIF)"
+ATURAN MODE RISET DETAIL:
+- Berikan analisis akademik MENDALAM, komprehensif, dan terstruktur rapi.
+- Sertakan kajian teori, metodologi, dan argumentasi ilmiah yang kokoh.
+- Format kutipan standar (APA 7th Edition) dan daftarkan referensi ilmiah yang relevan (jurnal nasional terakreditasi SINTA, portal Digilib/E-Journal UIN Sunan Kalijaga, atau Scopus sesuai domain ilmunya).
+- Tampilkan perbandingan atau tinjauan literatur bila relevan.`;
+      }
 
-      const modelLabel = modelUsed.replace("gemini-", "").replace("-preview", "");
+      if (selectedFaculty && selectedFaculty !== "Semua Fakultas") {
+        base += `\n\nKONTEKS FAKULTAS PENGGUNA: ${selectedFaculty}. Prioritaskan perspektif dan literatur yang relevan dengan fakultas ini.`;
+      }
 
-      msgDiv.innerHTML = `
-        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 border border-primary/30 text-primary flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-[17px]">auto_awesome</span>
-        </div>
-        <div class="max-w-[90%] sm:max-w-[85%] p-3.5 sm:p-5 rounded-2xl bg-surface-card border border-outline/70 shadow-lg space-y-2.5 w-full">
-          <div class="flex items-center justify-between border-b border-outline/40 pb-1.5 text-[11px] font-mono text-on-surface-muted">
-            <div class="flex items-center gap-2">
-              <span class="text-primary font-semibold flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                UIN Suka AI
-              </span>
-              ${modeBadge}
-              <span class="text-[10px] text-on-surface-muted hidden sm:inline">(${modelLabel})</span>
-            </div>
-            <button onclick="copyMessage(this)" class="hover:text-primary flex items-center gap-1 text-[11px] transition-colors" title="Salin Jawaban">
-              <span class="material-symbols-outlined text-[14px]">content_copy</span>
-              <span>Salin</span>
-            </button>
-          </div>
-          <div class="chat-prose stream-cursor"></div>
-        </div>
-      `;
-
-      list.appendChild(msgDiv);
-      const chatContainer = document.getElementById("chatContainer");
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-
-      return msgDiv.querySelector(".chat-prose");
+      return base;
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
-    }
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      sanitize: false
+    });
 
-    // Call Gemini API with Auto-Failover Queue & Real-Time SSE Token Streaming
-    async function handleChatSubmit(e) {
-      if (e) e.preventDefault();
-      const input = document.getElementById("userInput");
-      const text = input.value.trim();
-      if (!text) return;
+    async function handleChatSubmit(event) {
+      if (event) event.preventDefault();
+      
+      const inputEl = document.getElementById("userInput");
+      const question = inputEl.value.trim();
+      if (!question) return;
 
-      const apiKey = getApiKey();
-      if (!apiKey) {
-        openApiKeyModal();
+      if (activeAbortController) {
+        activeAbortController.abort();
+        activeAbortController = null;
+        setSendButtonState("send");
         return;
       }
 
-      const activeModeForThisPrompt = currentMode;
+      document.getElementById("welcomeCard").classList.add("hidden");
 
-      // Add user message
-      appendUserMessage(text);
-      input.value = "";
-      autoResizeTextarea(input);
+      appendUserMessage(question);
+      inputEl.value = "";
+      autoResizeTextarea(inputEl);
 
-      // Disable send button & show loading
-      const sendBtn = document.getElementById("sendButton");
-      const loading = document.getElementById("loadingIndicator");
-      const loadingStatus = document.getElementById("loadingStatusText");
-      sendBtn.disabled = true;
-      loading.classList.remove("hidden");
-      loadingStatus.textContent = "Menghubungkan ke Gemini...";
-      const chatContainer = document.getElementById("chatContainer");
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-
-      // Add to conversation history
       conversationHistory.push({
         role: "user",
-        parts: [{ text: text }]
+        parts: [{ text: question }]
       });
 
-      // Prepare system prompt based on Discipline Domain & Mode
-      const faculty = document.getElementById("facultySelect").value;
-      
-      const disciplineRule = `Kamu adalah Chatbot Asisten Akademik resmi UIN Sunan Kalijaga Yogyakarta.
-ATURAN UTAMA RANAH KEILMUAN & RELEVANSI SUMBER (SANGAT KETAT):
-1. SESUAIKAN DENGAN RANAH ILMU PERTANYAAN SECARA MURNI:
-   - JIKA PERTANYAAN TENTANG SAINS, KOMPUTER/PEMROGRAMAN, MATEMATIKA, FISIKA, BIOLOGI, KIMIA, TEKNIK, ATAU TEORI SOSIAL/UMUM:
-     * DILARANG KERAS MEMAKSAKAN dalil agama, ayat Al-Qur'an, hadis, fatwa MUI, atau sudut pandang Islam jika topiknya murni sains/teknis dan tidak diminta oleh pengguna!
-     * Gunakan terminologi saintifik murni, logika teknis, kode program, rumus, dan literatur ilmiah universal (misal: IEEE, ACM, Nature, ScienceDirect, APA, atau buku teks standar).
-   - JIKA PERTANYAAN TENTANG HUKUM ISLAM, FIKIH, SYARIAH, TAFSIR, HADIS, USHULUDDIN, ATAU STUDI ISLAM:
-     * Gunakan rujukan khazanah Islam yang sahih (Fatwa DSN-MUI, Al-Qur'an/Hadis, kitab klasik/turats, dan E-Journal keislaman UIN Suka seperti Al-Ahwal, Al-Jami'ah, Esensia).
-   - HANYA gunakan pendekatan "Integrasi-Interkoneksi" jika pengguna secara eksplisit menanyakannya atau meminta kaitan antara sains dan agama.
-2. Fakultas yang sedang dipilih pengguna: "${faculty}". Perhatikan ranah fakultas ini untuk memfokuskan gaya jawaban.`;
+      setSendButtonState("stop");
+      const assistantMessageEls = createAssistantMessagePlaceholder();
+      const contentEl = assistantMessageEls.content;
+      const modelBadgeEl = assistantMessageEls.badge;
+      const copyBtn = assistantMessageEls.copyBtn;
 
-      let modeInstruction = "";
-      if (activeModeForThisPrompt === "simple") {
-        modeInstruction = `
-INSTRUKSI FORMAT: MODE TUGAS BIASA (SINGKAT & LANGSUNG KE INTI)
-- Jawab singkat, padat, lugas, dan langsung menjawab inti tugas.
-- Tanpa pembuka atau penutup basa-basi.
-- Sumber seperlunya saja (1-2 rujukan singkat yang paling relevan dengan bidang ilmu tersebut).`;
-      } else {
-        modeInstruction = `
-INSTRUKSI FORMAT: MODE RISET DETAIL (MENDALAM & SUMBER LENGKAP)
-- Berikan analisis akademik mendalam, komprehensif, dan terstruktur secara ilmiah.
-- Uraikan dasar teori, metodologi, dan telaah kritis sesuai bidang ilmunya.
-- Sertakan rujukan ilmiah yang kaya (jurnal terakreditasi/internasional, buku rujukan utama).
-- Sertakan rekomendasi penulisan sitasi akademik (APA 7th Edition atau format standar bidang ilmu terkait) di bagian akhir.`;
-      }
+      showLoading(true, "Menghubungkan ke Gemini API...");
 
-      const fullSystemInstruction = `${disciplineRule}\n${modeInstruction}`;
-      const payload = {
-        systemInstruction: {
-          parts: [{ text: fullSystemInstruction }]
-        },
-        contents: conversationHistory,
-        generationConfig: {
-          temperature: activeModeForThisPrompt === "simple" ? 0.1 : 0.2,
-          topP: 0.95,
-          thinkingConfig: {
-            thinkingBudget: 0
+      activeAbortController = new AbortController();
+
+      try {
+        let fullGeneratedText = "";
+        
+        await generateStreamWithFailover({
+          history: conversationHistory,
+          systemPrompt: buildSystemPrompt(),
+          signal: activeAbortController.signal,
+          onStartModel: (modelName) => {
+            showLoading(true, `Menghubungkan ke ${modelName}...`);
+            modelBadgeEl.textContent = modelName;
+          },
+          onFirstToken: (modelName) => {
+            showLoading(false);
+            contentEl.classList.add("stream-cursor");
+            modelBadgeEl.textContent = modelName;
+          },
+          onChunk: (chunkText) => {
+            fullGeneratedText += chunkText;
+            contentEl.innerHTML = marked.parse(fullGeneratedText);
+            scrollToBottom();
           }
+        });
+
+        contentEl.classList.remove("stream-cursor");
+        contentEl.innerHTML = marked.parse(fullGeneratedText);
+        copyBtn.classList.remove("hidden");
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(fullGeneratedText).then(() => showToast("Jawaban disalin ke clipboard!"));
+        };
+
+        conversationHistory.push({
+          role: "model",
+          parts: [{ text: fullGeneratedText }]
+        });
+
+      } catch (err) {
+        showLoading(false);
+        contentEl.classList.remove("stream-cursor");
+        if (err.name === "AbortError") {
+          contentEl.innerHTML += `<p class="text-amber-400 text-xs italic mt-2">[Generasi dihentikan oleh pengguna]</p>`;
+        } else {
+          contentEl.innerHTML = `
+            <div class="p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-xs space-y-1">
+              <div class="font-bold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">error</span>
+                <span>Gagal mendapatkan respon:</span>
+              </div>
+              <p>${escapeHtml(err.message || "Terjadi kesalahan koneksi.")}</p>
+              <p class="text-[10px] text-gray-400">Silakan periksa API Key di tombol Pengaturan di atas atau coba beberapa saat lagi.</p>
+            </div>
+          `;
         }
-      };
+      } finally {
+        activeAbortController = null;
+        setSendButtonState("send");
+        showLoading(false);
+        scrollToBottom();
+      }
+    }
 
-      let proseElement = null;
-      let accumulatedText = "";
-      let successfulModel = null;
-      let lastErrorMessage = "";
+    async function generateStreamWithFailover({ history, systemPrompt, signal, onStartModel, onFirstToken, onChunk }) {
+      const apiKey = getApiKey();
+      let lastError = null;
 
-      // AUTO-FAILOVER QUEUE LOOP: Try models sequentially if high demand / error occurs
-      for (const candidateModel of MODEL_FALLBACK_QUEUE) {
-        activeAbortController = new AbortController();
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${candidateModel}:streamGenerateContent?alt=sse&key=${apiKey}`;
+      for (let i = 0; i < MODEL_FALLBACK_QUEUE.length; i++) {
+        const modelName = MODEL_FALLBACK_QUEUE[i];
+        if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+
+        if (onStartModel) onStartModel(modelName);
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`;
+        
+        const payload = {
+          contents: history,
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+            temperature: 0.2,
+            thinkingConfig: {
+              thinkingBudget: 0
+            }
+          }
+        };
 
         try {
-          loadingStatus.textContent = `Memproses (${candidateModel.replace("gemini-", "").replace("-preview", "")})...`;
-
-          const response = await fetch(endpoint, {
+          const response = await fetch(url, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-            signal: activeAbortController.signal
+            signal
           });
 
           if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            const errMsg = errData.error?.message || `HTTP ${response.status}`;
-            console.warn(`Model ${candidateModel} failed with: ${errMsg}. Trying next fallback model...`);
-            lastErrorMessage = errMsg;
-            continue; // Try next model in queue!
+            const errBody = await response.text().catch(() => "");
+            let errorMsg = `HTTP ${response.status}: ${response.statusText}`;
+            try {
+              const parsed = JSON.parse(errBody);
+              if (parsed.error && parsed.error.message) {
+                errorMsg = parsed.error.message;
+              }
+            } catch (_) {}
+            
+            if (response.status === 503 || response.status === 429 || response.status === 404 || errorMsg.includes("high demand") || errorMsg.includes("quota")) {
+              console.warn(`Model ${modelName} unavailable (${errorMsg}). Mengalihkan ke model cadangan...`);
+              lastError = new Error(errorMsg);
+              continue;
+            } else {
+              throw new Error(errorMsg);
+            }
           }
 
-          // Initialize streaming reader
           const reader = response.body.getReader();
           const decoder = new TextDecoder("utf-8");
           let buffer = "";
-          successfulModel = candidateModel;
+          let firstTokenReceived = false;
 
           while (true) {
             const { done, value } = await reader.read();
@@ -670,71 +928,138 @@ INSTRUKSI FORMAT: MODE RISET DETAIL (MENDALAM & SUMBER LENGKAP)
 
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split("\n");
-            buffer = lines.pop(); // keep partial trailing line
+            buffer = lines.pop();
 
             for (const line of lines) {
               const trimmed = line.trim();
-              if (trimmed.startsWith("data: ")) {
-                const jsonStr = trimmed.slice(6).trim();
-                if (jsonStr === "[DONE]") continue;
-
+              if (trimmed.startsWith("data:")) {
+                const jsonStr = trimmed.slice(5).trim();
+                if (!jsonStr) continue;
                 try {
-                  const parsed = JSON.parse(jsonStr);
-                  const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-                  if (chunk) {
-                    if (!proseElement) {
-                      loading.classList.add("hidden");
-                      proseElement = createAssistantStreamingNode(activeModeForThisPrompt, candidateModel);
+                  const data = JSON.parse(jsonStr);
+                  if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    const parts = data.candidates[0].content.parts;
+                    if (parts) {
+                      for (const part of parts) {
+                        if (part.text) {
+                          if (!firstTokenReceived) {
+                            firstTokenReceived = true;
+                            if (onFirstToken) onFirstToken(modelName);
+                          }
+                          if (onChunk) onChunk(part.text);
+                        }
+                      }
                     }
-
-                    accumulatedText += chunk;
-                    proseElement.innerHTML = marked.parse(accumulatedText);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
                   }
-                } catch (e) {
-                  // Ignore partial json parse
-                }
+                } catch (e) {}
               }
             }
           }
 
-          // If tokens received successfully, break out of fallback loop!
-          if (accumulatedText) {
-            break;
-          }
+          return;
 
-        } catch (err) {
-          if (err.name === "AbortError") {
-            console.log("Stream aborted by user.");
-            break;
-          }
-          console.warn(`Network/Stream error on ${candidateModel}:`, err);
-          lastErrorMessage = err.message;
-          // Continue to next candidate model
+        } catch (fetchErr) {
+          if (fetchErr.name === "AbortError") throw fetchErr;
+          console.warn(`Error with ${modelName}:`, fetchErr);
+          lastError = fetchErr;
         }
       }
 
-      // Finalize message state
-      loading.classList.add("hidden");
-      sendBtn.disabled = false;
-      activeAbortController = null;
+      throw lastError || new Error("Semua model Gemini sedang mengalami lonjakan antrian. Coba sesaat lagi.");
+    }
 
-      if (accumulatedText) {
-        if (proseElement) {
-          proseElement.classList.remove("stream-cursor");
-        }
-        conversationHistory.push({
-          role: "model",
-          parts: [{ text: accumulatedText }]
-        });
+    function appendUserMessage(text) {
+      const list = document.getElementById("messagesList");
+      const div = document.createElement("div");
+      div.className = "flex justify-end";
+      div.innerHTML = `
+        <div class="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-sm bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-3 sm:p-3.5 shadow-md">
+          <p class="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">${escapeHtml(text)}</p>
+        </div>
+      `;
+      list.appendChild(div);
+      scrollToBottom();
+    }
+
+    function createAssistantMessagePlaceholder() {
+      const list = document.getElementById("messagesList");
+      const wrapper = document.createElement("div");
+      wrapper.className = "flex items-start gap-2.5 sm:gap-3";
+
+      wrapper.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow mt-0.5">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <div class="flex-1 max-w-[90%] sm:max-w-[85%] rounded-2xl rounded-tl-sm bg-brand-card border border-brand-cardBorder p-3.5 sm:p-4 shadow-lg space-y-2">
+          <div class="flex items-center justify-between border-b border-brand-cardBorder/50 pb-1.5 text-[10px] text-gray-400 font-mono">
+            <div class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="msg-model-badge text-emerald-300 font-semibold">Gemini Engine</span>
+            </div>
+            <button class="msg-copy-btn hidden text-gray-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">content_copy</span>
+              <span>Salin</span>
+            </button>
+          </div>
+          <div class="chat-prose msg-content min-h-[20px]"></div>
+        </div>
+      `;
+
+      list.appendChild(wrapper);
+      scrollToBottom();
+
+      return {
+        content: wrapper.querySelector(".msg-content"),
+        badge: wrapper.querySelector(".msg-model-badge"),
+        copyBtn: wrapper.querySelector(".msg-copy-btn")
+      };
+    }
+
+    function showLoading(show, statusText) {
+      const el = document.getElementById("loadingIndicator");
+      const txt = document.getElementById("loadingStatusText");
+      if (show) {
+        if (statusText) txt.textContent = statusText;
+        el.classList.remove("hidden");
       } else {
-        const errorNode = createAssistantStreamingNode(activeModeForThisPrompt, "Failover Error");
-        errorNode.classList.remove("stream-cursor");
-        errorNode.innerHTML = marked.parse(`⚠️ **Semua jalur server sedang mengalami lonjakan beban (*High Demand*):**\n\n\`${lastErrorMessage}\`\n\nSistem telah mencoba semua jalur cadangan (*Gemini 3.5 Flash Lite, 3.5 Flash, 3-Flash, 3.8 Flash*). Silakan tunggu sekitar 15–30 detik lalu coba kirim kembali.`);
+        el.classList.add("hidden");
       }
+      scrollToBottom();
+    }
 
-      input.focus();
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+    function setSendButtonState(state) {
+      const btn = document.getElementById("sendButton");
+      const icon = document.getElementById("sendBtnIcon");
+      if (state === "stop") {
+        btn.classList.remove("bg-emerald-400", "text-brand-darkest");
+        btn.classList.add("bg-amber-500", "text-white");
+        icon.innerHTML = `<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"></rect>`;
+        btn.title = "Hentikan Generasi";
+      } else {
+        btn.classList.remove("bg-amber-500", "text-white");
+        btn.classList.add("bg-emerald-400", "text-brand-darkest");
+        icon.innerHTML = `<path d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" stroke-linecap="round" stroke-linejoin="round"></path>`;
+        btn.title = "Kirim Pesan";
+      }
+    }
+
+    function scrollToBottom() {
+      const container = document.getElementById("chatContainer");
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(string) {
+      const entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      };
+      return String(string).replace(/[&<>"']/g, s => entityMap[s]);
     }
   </script>
 </body>
