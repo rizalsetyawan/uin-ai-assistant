@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
   <title>Chatbot Akademik UIN Sunan Kalijaga | Gemini AI (Auto-Failover High Availability)</title>
+  <link rel="icon" type="image/svg+xml" href="logo-uin.svg"/>
   
   <!-- Fonts & Material Symbols -->
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -180,16 +181,18 @@
 
 <body class="bg-brand-darkest text-slate-100 font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-300">
 
-  <!-- TOPBAR -->
+  <!-- ========================================================
+       TOPBAR (Responsive: Desktop Spacious Bar + Mobile Native Controls)
+       ======================================================== -->
   <header class="shrink-0 bg-brand-darker/95 backdrop-blur-md border-b border-brand-cardBorder z-30 transition-all">
+    
+    <!-- Main Header Row -->
     <div class="max-w-6xl mx-auto w-full px-3.5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-3">
       
+      <!-- Brand & Title Block -->
       <div class="flex items-center space-x-2.5 sm:space-x-3 overflow-hidden">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-inner">
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-inner p-1">
+          <img src="logo-uin.svg" alt="Logo UIN Sunan Kalijaga" class="w-full h-full object-contain" />
         </div>
         <div class="truncate">
           <div class="flex items-center gap-1.5 sm:gap-2">
@@ -203,8 +206,10 @@
         </div>
       </div>
 
-      <!-- DESKTOP Controls -->
+      <!-- DESKTOP Header Controls (Hidden on mobile) -->
       <div class="hidden md:flex items-center gap-2.5">
+        
+        <!-- Desktop Mode Switcher Pill -->
         <div class="flex items-center p-1 rounded-xl bg-brand-dark border border-brand-cardBorder" role="tablist">
           <button
             id="desktopModeBtnSimple"
@@ -226,6 +231,7 @@
           </button>
         </div>
 
+        <!-- Desktop Faculty Select Dropdown -->
         <select
           id="desktopFacultySelect"
           onchange="onDesktopFacultyChange(this.value)"
@@ -242,6 +248,7 @@
           <option value="Pascasarjana">📚 Pascasarjana</option>
         </select>
 
+        <!-- Desktop Sesi Baru -->
         <button
           onclick="startNewChat()"
           class="h-9 px-3 rounded-xl bg-brand-card hover:bg-brand-emeraldDim/60 text-xs font-medium text-emerald-300 border border-brand-cardBorder flex items-center gap-1.5 transition-all">
@@ -251,6 +258,7 @@
           <span>Sesi Baru</span>
         </button>
 
+        <!-- Desktop Settings -->
         <button
           onclick="openApiKeyModal()"
           class="h-9 w-9 rounded-xl bg-brand-card text-gray-400 hover:text-white border border-brand-cardBorder flex items-center justify-center transition-all"
@@ -261,7 +269,7 @@
         </button>
       </div>
 
-      <!-- MOBILE Action Buttons -->
+      <!-- MOBILE Quick Top Action Buttons (Visible only on mobile) -->
       <div class="flex md:hidden items-center space-x-1.5 shrink-0">
         <button
           onclick="startNewChat()"
@@ -286,7 +294,7 @@
       </div>
     </div>
 
-    <!-- MOBILE SUB-BAR -->
+    <!-- MOBILE SUB-BAR (Faculty Trigger & Segmented Mode Toggle) -->
     <div class="flex md:hidden items-center justify-between gap-2 px-3.5 pb-2.5 pt-1 border-t border-brand-cardBorder/50">
       <button
         onclick="toggleFacultyDropdown()"
@@ -325,7 +333,9 @@
     </div>
   </header>
 
-  <!-- MOBILE FACULTY MODAL -->
+  <!-- ========================================================
+       MOBILE FACULTY MODAL / DROPDOWN
+       ======================================================== -->
   <div id="facultyModal" class="hidden md:hidden absolute top-28 left-3.5 right-3.5 z-40 bg-[#07201c] border border-emerald-500/40 rounded-xl shadow-2xl overflow-hidden backdrop-blur-md transition-all">
     <div class="px-3.5 py-2 bg-brand-cardBorder/40 border-b border-brand-cardBorder flex items-center justify-between text-[11px] text-gray-300 font-medium">
       <span>PILIH RANAH FAKULTAS</span>
@@ -395,18 +405,20 @@
     </ul>
   </div>
 
-  <!-- MAIN CHAT VIEWPORT -->
+  <!-- ========================================================
+       MAIN CHAT & CONTENT VIEWPORT
+       ======================================================== -->
   <main id="chatContainer" class="flex-1 overflow-y-auto px-3.5 sm:px-6 py-4 sm:py-6 space-y-4 max-w-4xl mx-auto w-full">
     
+    <!-- WELCOME CARD -->
     <section id="welcomeCard" class="space-y-4">
+      
+      <!-- Hero Introduction Banner -->
       <div class="p-4 sm:p-6 rounded-2xl bg-gradient-to-b from-[#0a2722] to-[#071b18] border border-brand-cardBorder relative overflow-hidden shadow-lg">
         <div class="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
         <div class="flex items-start gap-3.5">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-900/40 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow">
-            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              <path d="m9 12 2 2 4-4"></path>
-            </svg>
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-900/40 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow p-1.5">
+            <img src="logo-uin.svg" alt="Logo UIN Sunan Kalijaga" class="w-full h-full object-contain" />
           </div>
           <div>
             <h1 class="text-sm sm:text-lg font-bold text-white leading-snug tracking-tight">
@@ -419,7 +431,9 @@
         </div>
       </div>
 
+      <!-- Mode Selection Cards (Responsive: 1 column on mobile, 2 columns on desktop) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- Mode 1: Tugas Biasa -->
         <div
           id="card-mode-tugas"
           onclick="setResponseMode('simple')"
@@ -436,6 +450,7 @@
           </p>
         </div>
 
+        <!-- Mode 2: Riset Detail -->
         <div
           id="card-mode-riset"
           onclick="setResponseMode('detail')"
@@ -453,6 +468,7 @@
         </div>
       </div>
 
+      <!-- Example Prompts Across Disciplines (Responsive: 1 col on mobile, 2 cols on desktop) -->
       <div class="space-y-2 pt-1">
         <div class="flex items-center space-x-1.5 px-1">
           <span class="text-xs">💡</span>
@@ -462,6 +478,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
+          <!-- Prompt 1: QuickSort (Saintek) -->
           <button
             onclick="sendQuickPrompt('Jelaskan cara kerja algoritma QuickSort dan kompleksitas waktunya!')"
             class="text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
@@ -476,6 +493,7 @@
             </span>
           </button>
 
+          <!-- Prompt 2: Biologi (Saintek) -->
           <button
             onclick="sendQuickPrompt('Jelaskan mekanisme sintesis protein dalam biologi sel!')"
             class="text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
@@ -489,6 +507,7 @@
             </span>
           </button>
 
+          <!-- Prompt 3: Fikih Muamalah (Syari'ah) -->
           <button
             onclick="sendQuickPrompt('Hukum Paylater dan Akad Qardh menurut Fikih Muamalah')"
             class="text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
@@ -506,6 +525,7 @@
             </span>
           </button>
 
+          <!-- Prompt 4: Integrasi Amin Abdullah (Ushuluddin) -->
           <button
             onclick="sendQuickPrompt('Konsep Integrasi-Interkoneksi Amin Abdullah dalam Skripsi')"
             class="text-left p-3 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-emerald-500/50 hover:bg-[#09221e] active:scale-[0.99] transition-all flex items-start gap-3">
@@ -525,8 +545,10 @@
       </div>
     </section>
 
+    <!-- Messages List -->
     <div id="messagesList" class="space-y-4"></div>
 
+    <!-- Loading Indicator -->
     <div id="loadingIndicator" class="hidden flex items-start gap-3">
       <div class="w-8 h-8 rounded-full bg-emerald-950/70 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow">
         <span class="material-symbols-outlined text-emerald-400 text-[18px] animate-spin">autorenew</span>
@@ -540,9 +562,13 @@
     </div>
   </main>
 
-  <!-- BOTTOM INPUT BAR -->
+  <!-- ========================================================
+       BOTTOM INPUT BAR (Responsive: Mobile Full-width Pill & Desktop Spacious Card)
+       ======================================================== -->
   <footer class="shrink-0 bg-[#051311]/95 backdrop-blur-md border-t border-brand-cardBorder px-3.5 sm:px-6 pt-2.5 pb-3 sm:pb-4 safe-area-bottom shadow-2xl z-20">
     <div class="max-w-4xl mx-auto w-full">
+      
+      <!-- Input Box -->
       <form onsubmit="handleChatSubmit(event)" class="relative flex items-center bg-[#09221e] border border-brand-cardBorder focus-within:border-emerald-500/70 rounded-2xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-inner transition-all">
         <textarea
           id="userInput"
@@ -564,6 +590,7 @@
         </button>
       </form>
 
+      <!-- Engine & Mode Sub-bar -->
       <div class="mt-2 flex items-center justify-between text-[10px] sm:text-[11px] text-gray-400 px-1 font-normal tracking-tight font-mono">
         <div class="flex items-center space-x-1.5 truncate max-w-[70%]">
           <span>Mode:</span>
@@ -583,7 +610,9 @@
     </div>
   </footer>
 
-  <!-- MODAL: Settings -->
+  <!-- ========================================================
+       MODAL: API Key & Model Settings
+       ======================================================== -->
   <div id="apiKeyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div onclick="event.stopPropagation()" class="w-full max-w-md bg-[#07201c] border border-brand-cardBorder rounded-2xl p-5 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-brand-cardBorder/60 pb-3">
@@ -596,6 +625,7 @@
         </button>
       </div>
 
+      <!-- Auto Failover Info -->
       <div class="p-3 rounded-xl bg-brand-dark border border-emerald-500/30 flex items-start gap-2.5">
         <span class="material-symbols-outlined text-emerald-400 text-[20px] shrink-0 mt-0.5">shield</span>
         <div class="text-[11px] text-gray-300 leading-relaxed">
@@ -626,15 +656,19 @@
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0a231f] border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold transition-all duration-300 opacity-0 pointer-events-none translate-y-2 font-mono">
     Teks tersalin!
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- ========================================================
+       JAVASCRIPT LOGIC
+       ======================================================== -->
   <script>
+    // Config & Storage
     const DEFAULT_API_KEY = atob("QVEuQWI4Uk42S2NtNTJSU18xTXVCYmdGTFp2NjNLLUFwVTU0T1lBSGh4V0RVV09lSzhxcUE=");
     
+    // High-availability Models with high Free Tier quota (Excluded gemini-3.8-flash which is capped at 20 req/day)
     const MODEL_FALLBACK_QUEUE = [
       "gemini-3.5-flash-lite",
       "gemini-flash-lite-latest",
@@ -642,11 +676,13 @@
       "gemini-3-flash-preview"
     ];
     
-    let currentMode = "simple";
+    // Application State
+    let currentMode = "simple"; // "simple" (Tugas Biasa) or "detail" (Riset Detail)
     let selectedFaculty = "Semua Fakultas";
     let conversationHistory = [];
     let activeAbortController = null;
 
+    // API Key Helpers
     function getApiKey() {
       return localStorage.getItem("uin_gemini_api_key") || DEFAULT_API_KEY;
     }
@@ -684,6 +720,7 @@
       }, 2500);
     }
 
+    // Faculty Handlers (Syncs both Desktop Select & Mobile Dropdown)
     function toggleFacultyDropdown(forceState) {
       const modal = document.getElementById("facultyModal");
       const chevron = document.getElementById("facultyChevron");
@@ -704,6 +741,7 @@
       document.getElementById("selectedFacultyText").textContent = label;
       document.getElementById("desktopFacultySelect").value = value;
 
+      // Update mobile options list
       document.querySelectorAll(".faculty-opt").forEach(btn => {
         if (btn.getAttribute("data-value") === value) {
           btn.classList.add("bg-emerald-950/40", "text-emerald-300", "font-medium");
@@ -727,50 +765,63 @@
       selectFaculty(val, icon, label);
     }
 
+    // Mode Controller: "simple" (Tugas Biasa) vs "detail" (Riset Detail)
     function setResponseMode(mode) {
       currentMode = mode;
       
+      // Desktop elements
       const desktopSimple = document.getElementById("desktopModeBtnSimple");
       const desktopDetail = document.getElementById("desktopModeBtnDetail");
 
+      // Mobile elements
       const mobileSimple = document.getElementById("mobileToggleTugasBtn");
       const mobileDetail = document.getElementById("mobileToggleRisetBtn");
 
+      // Shared card elements
       const cardTugas = document.getElementById("card-mode-tugas");
       const cardRiset = document.getElementById("card-mode-riset");
       const badgeTugas = document.getElementById("badge-tugas");
       const badgeRiset = document.getElementById("badge-riset");
 
+      // Footer labels
       const activeModeLabel = document.getElementById("activeModeLabel");
       const switchModeLink = document.getElementById("switchModeLink");
 
       if (mode === "simple") {
+        // Desktop nav
         desktopSimple.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-emerald-500 text-brand-darkest shadow-sm";
         desktopDetail.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all";
 
+        // Mobile nav
         mobileSimple.className = "flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500 text-brand-darkest font-semibold transition-all";
         mobileDetail.className = "flex items-center gap-1 px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all";
 
+        // Welcome Cards
         cardTugas.className = "p-3.5 sm:p-4 rounded-xl bg-[#09221e] border-2 border-emerald-500/70 shadow-sm relative transition-all cursor-pointer";
         cardRiset.className = "p-3.5 sm:p-4 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-brand-cardBorderHover shadow-sm transition-all cursor-pointer";
         badgeTugas.classList.remove("hidden");
         badgeRiset.classList.add("hidden");
 
+        // Footer
         activeModeLabel.textContent = "⚡ Tugas Biasa (Cepat)";
         activeModeLabel.className = "text-emerald-400 font-medium truncate";
         switchModeLink.textContent = "Ganti ke Riset Detail";
       } else {
+        // Desktop nav
         desktopDetail.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-400 text-brand-darkest shadow-sm";
         desktopSimple.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all";
 
+        // Mobile nav
         mobileDetail.className = "flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-400 text-brand-darkest font-semibold transition-all";
         mobileSimple.className = "flex items-center gap-1 px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all";
 
+        // Welcome Cards
         cardRiset.className = "p-3.5 sm:p-4 rounded-xl bg-[#09221e] border-2 border-amber-400/80 shadow-sm relative transition-all cursor-pointer";
         cardTugas.className = "p-3.5 sm:p-4 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-brand-cardBorderHover shadow-sm transition-all cursor-pointer";
         badgeRiset.classList.remove("hidden");
         badgeTugas.classList.add("hidden");
 
+        // Footer
         activeModeLabel.textContent = "📖 Mode Riset Detail";
         activeModeLabel.className = "text-amber-400 font-medium truncate";
         switchModeLink.textContent = "Ganti ke Tugas Biasa";
@@ -812,6 +863,7 @@
       }
     }
 
+    // Build discipline-specific System Prompt
     function buildSystemPrompt() {
       const isSimple = currentMode === "simple";
       
@@ -991,10 +1043,11 @@ ATURAN MODE RISET DETAIL:
               }
             } catch (_) {}
             
+            // Check if overload or quota or not found -> automatically failover to next model
             if (response.status === 503 || response.status === 429 || response.status === 404 || errorMsg.includes("high demand") || errorMsg.includes("quota")) {
               console.warn(`Model ${modelName} unavailable (${errorMsg}). Mengalihkan ke model cadangan...`);
               lastError = new Error(errorMsg);
-              continue;
+              continue; // try next candidate model!
             } else {
               throw new Error(errorMsg);
             }
@@ -1039,7 +1092,7 @@ ATURAN MODE RISET DETAIL:
             }
           }
 
-          return;
+          return; // Completed successfully!
 
         } catch (fetchErr) {
           if (fetchErr.name === "AbortError") throw fetchErr;
@@ -1070,11 +1123,8 @@ ATURAN MODE RISET DETAIL:
       wrapper.className = "flex items-start gap-2.5 sm:gap-3";
 
       wrapper.innerHTML = `
-        <div class="w-8 h-8 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow mt-0.5">
-          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
+        <div class="w-8 h-8 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow mt-0.5 p-1">
+          <img src="logo-uin.svg" alt="UIN AI" class="w-full h-full object-contain" />
         </div>
         <div class="flex-1 max-w-[90%] sm:max-w-[85%] rounded-2xl rounded-tl-sm bg-brand-card border border-brand-cardBorder p-3.5 sm:p-4 shadow-lg space-y-2">
           <div class="flex items-center justify-between border-b border-brand-cardBorder/50 pb-1.5 text-[10px] text-gray-400 font-mono">
@@ -1125,7 +1175,7 @@ ATURAN MODE RISET DETAIL:
         btn.classList.remove("bg-amber-500", "text-white");
         btn.classList.add("bg-emerald-400", "text-brand-darkest");
         icon.innerHTML = `<path d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" stroke-linecap="round" stroke-linejoin="round"></path>`;
-        btn.title = "Kirim Pertanyaan";
+        btn.title = "Kirim Pesan";
       }
     }
 
