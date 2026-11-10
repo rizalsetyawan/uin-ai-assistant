@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <title>Chatbot Akademik UIN Sunan Kalijaga | Gemini AI (Auto-Failover High Availability)</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Marked.js for clean Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#4edea3",
+            "primary-container": "#10b981",
+            "on-primary": "#003824",
+            secondary: "#ffb95f",
+            "secondary-container": "#ee9800",
+            surface: "#011710",
+            "surface-low": "#072018",
+            "surface-card": "#0c241c",
+            "surface-high": "#172e27",
+            "surface-highest": "#223931",
+            "on-surface": "#cde9dd",
+            "on-surface-muted": "#96aba0",
+            outline: "#2b453a",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            mono: ["Space Grotesk", "monospace"],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #011710; }
+    ::-webkit-scrollbar-thumb { background: #172e27; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #223931; }
+    
+    /* Markdown Styles */
+    .chat-prose { color: #cde9dd; font-size: 0.9375rem; line-height: 1.65; }
+    .chat-prose p { margin-bottom: 0.75rem; }
+    .chat-prose p:last-child { margin-bottom: 0; }
+    .chat-prose h1, .chat-prose h2, .chat-prose h3 { color: #4edea3; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; }
+    .chat-prose h1 { font-size: 1.25rem; }
+    .chat-prose h2 { font-size: 1.1rem; }
+    .chat-prose h3 { font-size: 1rem; }
+    .chat-prose ul, .chat-prose ol { margin-left: 1.25rem; margin-bottom: 0.75rem; }
+    .chat-prose ul { list-style-type: disc; }
+    .chat-prose ol { list-style-type: decimal; }
+    .chat-prose li { margin-bottom: 0.25rem; }
+    .chat-prose strong { color: #ffffff; font-weight: 600; }
+    .chat-prose blockquote { border-left: 3px solid #ffb95f; padding-left: 0.75rem; margin: 0.75rem 0; color: #ffddb8; background: rgba(255, 185, 95, 0.08); padding-top: 0.25rem; padding-bottom: 0.25rem; border-radius: 0 0.5rem 0.5rem 0; }
+    .chat-prose code { font-family: 'Space Grotesk', monospace; font-size: 0.85em; background: #072018; padding: 0.15rem 0.35rem; border-radius: 0.25rem; color: #4edea3; border: 1px solid #172e27; }
+    .chat-prose pre { background: #00120c; padding: 0.75rem; border-radius: 0.75rem; overflow-x: auto; margin: 0.75rem 0; border: 1px solid #172e27; }
+    .chat-prose pre code { background: transparent; padding: 0; border: none; }
+    
+    /* Blinking Cursor while streaming */
+    .stream-cursor::after {
+      content: '▋';
+      display: inline-block;
+      vertical-align: baseline;
+      color: #4edea3;
+      animation: cursorBlink 0.8s infinite;
+      margin-left: 2px;
+      font-size: 0.9em;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Typing dots animation */
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+    .typing-dot { animation: typingBounce 1.4s infinite ease-in-out both; }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-primary/20 selection:text-primary">
+
+  <!-- ========================================================
+       TOP HEADER (Clean, Mobile-Friendly, Mode Toggler)
+       ======================================================== -->
+  <header class="h-14 sm:h-16 shrink-0 bg-surface/90 backdrop-blur-xl border-b border-outline/50 px-3 sm:px-6 flex items-center justify-between z-30">
+    <div class="flex items-center gap-2.5">
+      <!-- Logo UIN -->
+      <div class="w-8 h-8 rounded-lg bg-surface-high border border-primary/30 flex items-center justify-center p-1 shrink-0 shadow-inner">
+        <img alt="UIN Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCBiwgiZ6leWtYIu_MJ3JCVZWS-VJnLPIKqnZNMxFIxZ3pe28VqXglei1tE14HSfnDvVBt2-haQbm-EqEh0o4--CzkmD0K6MqAIOq6l5KNtyYn7cmWUuAZ6CzJQo5ecmOfrRuWJeQG4xJKHp3d9qAR92t5kCsaW6PingujQpucBs9i8DnoToEr9AnlwJjNddi-zN5PSzCn3SxNK247Ugcy9BJk-yby4OTiUu2OrmX_A1g"/>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold text-sm sm:text-base text-on-surface tracking-tight">AI Akademik UIN</span>
+          <span id="modelHeaderBadge" class="px-1.5 py-0.2 rounded-full bg-surface-high text-primary font-mono text-[10px] border border-primary/30 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            Auto Failover
+          </span>
+        </div>
+        <p class="hidden sm:block text-[11px] text-on-surface-muted font-mono">
+          UIN Sunan Kalijaga Yogyakarta
+        </p>
+      </div>
+    </div>
+
+    <!-- Center / Right Mode Switcher & Controls -->
+    <div class="flex items-center gap-1.5 sm:gap-2.5">
+      
+      <!-- MODE SWITCHER PILL (Tugas Biasa vs Riset Detail) -->
+      <div class="flex items-center p-0.5 sm:p-1 rounded-xl bg-surface-card border border-outline" role="tablist">
+        <button
+          id="modeBtnSimple"
+          onclick="setResponseMode('simple')"
+          class="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all bg-primary text-on-primary shadow-sm"
+          title="Jawaban ringkas, cepat kilat, langsung ke inti, sumber seperlunya">
+          <span class="material-symbols-outlined text-[15px] sm:text-[16px]">bolt</span>
+          <span>Tugas Biasa</span>
+        </button>
+        <button
+          id="modeBtnDetail"
+          onclick="setResponseMode('detail')"
+          class="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold text-on-surface-muted hover:text-on-surface transition-all"
+          title="Penjelasan komprehensif, telaah mendalam, metodologi, dan rujukan ilmiah lengkap">
+          <span class="material-symbols-outlined text-[15px] sm:text-[16px]">menu_book</span>
+          <span>Riset Detail</span>
+        </button>
+      </div>
+
+      <!-- Faculty selector pill (Dropdown) -->
+      <select id="facultySelect" onchange="updateFacultyContext()" class="hidden md:block bg-surface-card hover:bg-surface-high border border-outline text-xs text-on-surface rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-primary/50 transition-colors cursor-pointer max-w-[150px] truncate" title="Pilih Fakultas untuk konteks akademik">
+        <option value="Semua Fakultas">🌐 Umum UIN Suka</option>
+        <option value="Fakultas Sains dan Teknologi">🔬 Saintek (Sains &amp; Komputer)</option>
+        <option value="Fakultas Syari'ah dan Hukum">⚖️ FSH (Syari'ah &amp; Hukum)</option>
+        <option value="Fakultas Ekonomi dan Bisnis Islam">📈 FEBI (Ekonomi)</option>
+        <option value="Fakultas Tarbiyah dan Keguruan">🎓 FITK (Pendidikan)</option>
+        <option value="Fakultas Ushuluddin dan Pemikiran Islam">📖 FUPI (Ushuluddin)</option>
+        <option value="Fakultas Dakwah dan Komunikasi">🎙️ FDK (Dakwah &amp; Komunikasi)</option>
+        <option value="Fakultas Ilmu Sosial dan Humaniora">🤝 Fishum (Sosial &amp; Psikologi)</option>
+        <option value="Fakultas Adab dan Ilmu Budaya">🏛️ Adab (Sastra &amp; Budaya)</option>
+        <option value="Pascasarjana">📚 Pascasarjana</option>
+      </select>
+
+      <!-- New Chat Button -->
+      <button onclick="startNewChat()" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline text-xs text-on-surface flex items-center gap-1 transition-colors" title="Mulai Sesi Riset Baru">
+        <span class="material-symbols-outlined text-[18px] text-primary">add_comment</span>
+        <span class="hidden lg:inline font-medium">Sesi Baru</span>
+      </button>
+
+      <!-- Settings Modal Trigger -->
+      <button onclick="openApiKeyModal()" class="p-2 rounded-xl bg-surface-card hover:bg-surface-high border border-outline text-on-surface-muted hover:text-on-surface transition-colors" title="Pengaturan AI">
+        <span class="material-symbols-outlined text-[18px]">tune</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       CHAT MESSAGES VIEWPORT
+       ======================================================== -->
+  <main id="chatContainer" class="flex-1 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 max-w-4xl mx-auto w-full">
+    
+    <!-- Welcome Card & Quick Prompt Suggestions -->
+    <div id="welcomeCard" class="p-4 sm:p-6 rounded-2xl bg-surface-low border border-outline/70 shadow-lg space-y-4">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-primary text-[22px]">verified</span>
+        </div>
+        <div>
+          <h2 class="font-bold text-base sm:text-lg text-on-surface">Chatbot Akademik UIN Sunan Kalijaga</h2>
+          <p class="text-xs sm:text-sm text-on-surface-muted mt-0.5 leading-relaxed">
+            Dilengkapi <strong>Auto-Failover System</strong> (otomatis mengalihkan ke model cadangan bila server sedang sibuk) dan <strong>Presisi Ranah Ilmu</strong> (sains dijawab murni saintifik, agama dijawab dengan dalil sahih).
+          </p>
+        </div>
+      </div>
+
+      <!-- Mode explanation banner -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <div onclick="setResponseMode('simple')" class="p-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 cursor-pointer transition-all flex flex-col gap-1">
+          <div class="flex items-center gap-1.5 text-primary font-bold text-xs">
+            <span class="material-symbols-outlined text-[16px]">bolt</span>
+            <span>Mode Tugas Biasa (Super Cepat)</span>
+          </div>
+          <p class="text-[11px] text-on-surface-muted leading-relaxed">
+            Jawaban <strong>singkat, padat, dan langsung ke inti</strong>. Sumber disertakan seperlunya sesuai bidang ilmu tugas kuliah.
+          </p>
+        </div>
+
+        <div onclick="setResponseMode('detail')" class="p-3 rounded-xl border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 cursor-pointer transition-all flex flex-col gap-1">
+          <div class="flex items-center gap-1.5 text-secondary font-bold text-xs">
+            <span class="material-symbols-outlined text-[16px]">menu_book</span>
+            <span>Mode Riset Detail</span>
+          </div>
+          <p class="text-[11px] text-on-surface-muted leading-relaxed">
+            Pembahasan <strong>mendalam &amp; komprehensif</strong>, teori akademik spesifik, metodologi, dan rujukan jurnal ilmiah lengkap.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Suggested Prompts across different disciplines -->
+      <div class="pt-2 border-t border-outline/40">
+        <span class="text-[11px] font-mono text-secondary font-semibold uppercase tracking-wider block mb-2">
+          💡 Contoh Pertanyaan Lintas Ranah Ilmu:
+        </span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <!-- Non-religious science / tech -->
+          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-primary transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-primary">terminal</span>
+            <span>Jelaskan cara kerja algoritma QuickSort dan kompleksitas waktunya!</span>
+          </button>
+          <!-- Non-religious science / biology -->
+          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-primary transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-primary">biotech</span>
+            <span>Jelaskan mekanisme sintesis protein dalam biologi sel!</span>
+          </button>
+          <!-- Islamic topic -->
+          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-secondary transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-secondary">gavel</span>
+            <span>Hukum Paylater dan Akad Qardh menurut Fikih Muamalah</span>
+          </button>
+          <!-- Integrative topic -->
+          <button onclick="sendQuickPrompt(this.innerText)" class="text-left p-2.5 rounded-xl bg-surface-card hover:bg-surface-high border border-outline/60 text-on-surface hover:text-secondary transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-secondary">hub</span>
+            <span>Konsep Integrasi-Interkoneksi Amin Abdullah dalam Skripsi</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="messagesList" class="space-y-4"></div>
+
+    <!-- Loading Indicator (Only shown before first token arrives) -->
+    <div id="loadingIndicator" class="hidden flex items-start gap-3">
+      <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-primary text-[18px] animate-spin">autorenew</span>
+      </div>
+      <div class="p-3 rounded-2xl bg-surface-card border border-outline/60 flex items-center gap-2 shadow-md">
+        <span id="loadingStatusText" class="text-xs text-on-surface-muted font-mono">Menghubungkan ke Gemini...</span>
+        <div class="w-1.5 h-1.5 rounded-full bg-primary typing-dot"></div>
+        <div class="w-1.5 h-1.5 rounded-full bg-primary typing-dot"></div>
+        <div class="w-1.5 h-1.5 rounded-full bg-primary typing-dot"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================
+       BOTTOM INPUT BAR (Mobile & Desktop Responsive)
+       ======================================================== -->
+  <footer class="shrink-0 bg-surface/95 backdrop-blur-xl border-t border-outline/50 p-2.5 sm:p-4 z-20">
+    <div class="max-w-4xl mx-auto w-full">
+      <form onsubmit="handleChatSubmit(event)" class="relative flex items-center bg-surface-card rounded-2xl border border-outline focus-within:border-primary/50 shadow-lg px-2 sm:px-3 py-1.5 transition-all">
+        <!-- Input field -->
+        <textarea
+          id="userInput"
+          rows="1"
+          placeholder="Tanyakan algoritma, matematika, sains, sosiologi, fikih, atau metodologi skripsi..."
+          class="w-full bg-transparent text-xs sm:text-sm text-on-surface placeholder:text-on-surface-muted/50 focus:outline-none resize-none py-2 px-1 max-h-32 min-h-[38px]"
+          onkeydown="handleKeyDown(event)"
+          oninput="autoResizeTextarea(this)"></textarea>
+
+        <!-- Send / Stop Button -->
+        <button
+          type="submit"
+          id="sendButton"
+          class="ml-2 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-on-primary font-bold flex items-center justify-center shrink-0 shadow-md hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Kirim Pertanyaan">
+          <span id="sendBtnIcon" class="material-symbols-outlined text-[20px]">arrow_upward</span>
+        </button>
+      </form>
+      
+      <!-- Footer Metadata & Active Mode Status Badge -->
+      <div class="flex items-center justify-between mt-1.5 px-1 text-[10px] sm:text-[11px] text-on-surface-muted font-mono">
+        <div class="flex items-center gap-2">
+          <span>Mode: <strong id="activeModeLabel" class="text-primary font-semibold">⚡ Tugas Biasa (Cepat)</strong></span>
+          <span class="text-outline">•</span>
+          <span class="hidden sm:inline">Engine: <span id="activeModelFooter" class="text-on-surface font-semibold text-primary">Auto-Failover Active</span></span>
+        </div>
+        <button onclick="toggleResponseMode()" class="text-secondary hover:underline cursor-pointer">
+          Ganti ke <span id="switchModeSuggestion">Riset Detail</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       MODAL: API Key & Model Settings
+       ======================================================== -->
+  <div id="apiKeyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="w-full max-w-md bg-surface-low border border-outline rounded-2xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-outline/40 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+          <h3 class="font-bold text-base text-on-surface">Pengaturan Model &amp; API Key</h3>
+        </div>
+        <button onclick="closeApiKeyModal()" class="text-on-surface-muted hover:text-on-surface p-1">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Auto Failover Info -->
+      <div class="p-3 rounded-xl bg-surface-card border border-primary/30 flex items-start gap-2.5">
+        <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">shield</span>
+        <div class="text-[11px] text-on-surface-muted leading-relaxed">
+          <strong class="text-primary">Auto-Failover Aktif:</strong> Bila server utama sibuk (*High Demand / 503*), sistem otomatis mengalihkan ke model alternatif tercepat (<code class="text-primary">3.5 Flash Lite</code> &rarr; <code class="text-primary">3.5 Flash</code> &rarr; <code class="text-primary">Flash Latest</code> &rarr; <code class="text-primary">3.8 Flash</code>) tanpa henti.
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="apiKeyInput" class="block text-xs font-semibold text-on-surface">Google Gemini API Key:</label>
+        <input
+          type="password"
+          id="apiKeyInput"
+          placeholder="Masukkan Gemini API Key..."
+          class="w-full bg-surface-card border border-outline text-xs text-on-surface rounded-xl px-3 py-2.5 font-mono focus:outline-none focus:border-primary/50"/>
+        <p class="text-[11px] text-on-surface-muted leading-relaxed">
+          Tersimpan aman di peramban lokal (Local Storage) Anda.
+        </p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button onclick="closeApiKeyModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-on-surface-muted hover:text-on-surface bg-surface-card border border-outline">
+          Batal
+        </button>
+        <button onclick="saveApiKey()" class="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-on-primary hover:brightness-110 shadow-md">
+          Simpan Pengaturan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-surface-high border border-primary/40 text-on-surface px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold transition-all duration-300 opacity-0 pointer-events-none translate-y-2">
+    Teks tersalin!
+  </div>
+
+  <!-- ========================================================
+       JAVASCRIPT LOGIC (Gemini API & Auto-Failover Streaming Engine)
+       ======================================================== -->
+  <script>
+    // Config & Storage
+    const DEFAULT_API_KEY = atob("QVEuQWI4Uk42S2NtNTJSU18xTXVCYmdGTFp2NjNLLUFwVTU0T1lBSGh4V0RVV09lSzhxcUE=");
+    
+    // Priority Model Queue for Auto-Failover (Fastest & Most Available first)
+    const MODEL_FALLBACK_QUEUE = [
+      "gemini-3.5-flash-lite",
+      "gemini-3.5-flash",
+      "gemini-flash-lite-latest",
+      "gemini-3-flash-preview",
+      "gemini-3.8-flash"
+    ];
+    
+    // Application State
+    let currentMode = "simple"; // "simple" (Tugas Biasa) or "detail" (Riset Detail)
+    let conversationHistory = []; // { role: "user" | "model", parts: [{ text: "..." }] }
+    let activeAbortController = null;
+
+    // Init API Key
+    function getApiKey() {
+      return localStorage.getItem("uin_gemini_api_key") || DEFAULT_API_KEY;
+    }
+
+    document.getElementById("apiKeyInput").value = getApiKey();
+
+    function openApiKeyModal() {
+      document.getElementById("apiKeyModal").classList.remove("hidden");
+    }
+    function closeApiKeyModal() {
+      document.getElementById("apiKeyModal").classList.add("hidden");
+    }
+    function saveApiKey() {
+      const val = document.getElementById("apiKeyInput").value.trim();
+      if (val) {
+        localStorage.setItem("uin_gemini_api_key", val);
+      }
+      showToast("Pengaturan berhasil disimpan!");
+      closeApiKeyModal();
+    }
+
+    // Response Mode Switching Logic
+    function setResponseMode(mode) {
+      currentMode = mode;
+      const btnSimple = document.getElementById("modeBtnSimple");
+      const btnDetail = document.getElementById("modeBtnDetail");
+      const activeLabel = document.getElementById("activeModeLabel");
+      const switchSuggestion = document.getElementById("switchModeSuggestion");
+      const loadingText = document.getElementById("loadingStatusText");
+
+      if (mode === "simple") {
+        btnSimple.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all bg-primary text-on-primary shadow-sm";
+        btnDetail.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold text-on-surface-muted hover:text-on-surface transition-all";
+        activeLabel.innerHTML = `<span class="text-primary font-bold">⚡ Tugas Biasa (Cepat)</span>`;
+        switchSuggestion.textContent = "Riset Detail";
+        loadingText.textContent = "Menghubungkan Gemini Turbo...";
+        showToast("Mode Tugas Biasa: Respon singkat kilat (< 1 detik).");
+      } else {
+        btnDetail.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all bg-secondary text-surface shadow-sm font-bold";
+        btnSimple.className = "flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold text-on-surface-muted hover:text-on-surface transition-all";
+        activeLabel.innerHTML = `<span class="text-secondary font-bold">📚 Riset Detail (Komprehensif)</span>`;
+        switchSuggestion.textContent = "Tugas Biasa";
+        loadingText.textContent = "Menganalisis khazanah ilmiah & rujukan...";
+        showToast("Mode Riset Detail: Jawaban mendalam & rujukan lengkap.");
+      }
+    }
+
+    function toggleResponseMode() {
+      setResponseMode(currentMode === "simple" ? "detail" : "simple");
+    }
+
+    function updateFacultyContext() {
+      const faculty = document.getElementById("facultySelect").value;
+      showToast(`Konteks akademik disesuaikan: ${faculty}`);
+    }
+
+    function autoResizeTextarea(textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = Math.min(textarea.scrollHeight, 128) + "px";
+    }
+
+    function handleKeyDown(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleChatSubmit(e);
+      }
+    }
+
+    function sendQuickPrompt(text) {
+      document.getElementById("userInput").value = text;
+      handleChatSubmit(new Event("submit"));
+    }
+
+    function startNewChat() {
+      if (activeAbortController) {
+        activeAbortController.abort();
+        activeAbortController = null;
+      }
+      conversationHistory = [];
+      document.getElementById("messagesList").innerHTML = "";
+      document.getElementById("welcomeCard").classList.remove("hidden");
+      document.getElementById("userInput").value = "";
+      document.getElementById("userInput").focus();
+      showToast("Sesi riset baru dimulai.");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.remove("opacity-0", "pointer-events-none", "translate-y-2");
+      toast.classList.add("opacity-100", "translate-y-0");
+      setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-y-0");
+        toast.classList.add("opacity-0", "pointer-events-none", "translate-y-2");
+      }, 2500);
+    }
+
+    function copyMessage(btn) {
+      const card = btn.closest(".message-card");
+      const content = card.querySelector(".chat-prose").innerText;
+      navigator.clipboard.writeText(content).then(() => {
+        showToast("Teks jawaban berhasil disalin!");
+      });
+    }
+
+    // Append User Message to UI
+    function appendUserMessage(text) {
+      document.getElementById("welcomeCard").classList.add("hidden");
+      const list = document.getElementById("messagesList");
+
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message-card flex items-start gap-2.5 sm:gap-3 justify-end";
+      msgDiv.innerHTML = `
+        <div class="max-w-[85%] sm:max-w-[75%] p-3 sm:p-4 rounded-2xl bg-surface-high border border-outline text-on-surface shadow-md">
+          <p class="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">${escapeHtml(text)}</p>
+        </div>
+        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-secondary/20 border border-secondary/40 text-secondary flex items-center justify-center shrink-0 text-xs font-bold">
+          U
+        </div>
+      `;
+
+      list.appendChild(msgDiv);
+      const chatContainer = document.getElementById("chatContainer");
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Create Initial Assistant Message Node for Streaming
+    function createAssistantStreamingNode(modeTag, modelUsed) {
+      document.getElementById("welcomeCard").classList.add("hidden");
+      const list = document.getElementById("messagesList");
+
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message-card flex items-start gap-2.5 sm:gap-3 justify-start";
+
+      const modeBadge = modeTag === "simple" 
+        ? `<span class="px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[10px] font-semibold flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">bolt</span> Tugas Biasa</span>`
+        : `<span class="px-2 py-0.5 rounded-md bg-secondary/15 border border-secondary/30 text-secondary text-[10px] font-semibold flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">menu_book</span> Riset Detail</span>`;
+
+      const modelLabel = modelUsed.replace("gemini-", "").replace("-preview", "");
+
+      msgDiv.innerHTML = `
+        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 border border-primary/30 text-primary flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[17px]">auto_awesome</span>
+        </div>
+        <div class="max-w-[90%] sm:max-w-[85%] p-3.5 sm:p-5 rounded-2xl bg-surface-card border border-outline/70 shadow-lg space-y-2.5 w-full">
+          <div class="flex items-center justify-between border-b border-outline/40 pb-1.5 text-[11px] font-mono text-on-surface-muted">
+            <div class="flex items-center gap-2">
+              <span class="text-primary font-semibold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                UIN Suka AI
+              </span>
+              ${modeBadge}
+              <span class="text-[10px] text-on-surface-muted hidden sm:inline">(${modelLabel})</span>
+            </div>
+            <button onclick="copyMessage(this)" class="hover:text-primary flex items-center gap-1 text-[11px] transition-colors" title="Salin Jawaban">
+              <span class="material-symbols-outlined text-[14px]">content_copy</span>
+              <span>Salin</span>
+            </button>
+          </div>
+          <div class="chat-prose stream-cursor"></div>
+        </div>
+      `;
+
+      list.appendChild(msgDiv);
+      const chatContainer = document.getElementById("chatContainer");
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      return msgDiv.querySelector(".chat-prose");
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Call Gemini API with Auto-Failover Queue & Real-Time SSE Token Streaming
+    async function handleChatSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        openApiKeyModal();
+        return;
+      }
+
+      const activeModeForThisPrompt = currentMode;
+
+      // Add user message
+      appendUserMessage(text);
+      input.value = "";
+      autoResizeTextarea(input);
+
+      // Disable send button & show loading
+      const sendBtn = document.getElementById("sendButton");
+      const loading = document.getElementById("loadingIndicator");
+      const loadingStatus = document.getElementById("loadingStatusText");
+      sendBtn.disabled = true;
+      loading.classList.remove("hidden");
+      loadingStatus.textContent = "Menghubungkan ke Gemini...";
+      const chatContainer = document.getElementById("chatContainer");
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Add to conversation history
+      conversationHistory.push({
+        role: "user",
+        parts: [{ text: text }]
+      });
+
+      // Prepare system prompt based on Discipline Domain & Mode
+      const faculty = document.getElementById("facultySelect").value;
+      
+      const disciplineRule = `Kamu adalah Chatbot Asisten Akademik resmi UIN Sunan Kalijaga Yogyakarta.
+ATURAN UTAMA RANAH KEILMUAN & RELEVANSI SUMBER (SANGAT KETAT):
+1. SESUAIKAN DENGAN RANAH ILMU PERTANYAAN SECARA MURNI:
+   - JIKA PERTANYAAN TENTANG SAINS, KOMPUTER/PEMROGRAMAN, MATEMATIKA, FISIKA, BIOLOGI, KIMIA, TEKNIK, ATAU TEORI SOSIAL/UMUM:
+     * DILARANG KERAS MEMAKSAKAN dalil agama, ayat Al-Qur'an, hadis, fatwa MUI, atau sudut pandang Islam jika topiknya murni sains/teknis dan tidak diminta oleh pengguna!
+     * Gunakan terminologi saintifik murni, logika teknis, kode program, rumus, dan literatur ilmiah universal (misal: IEEE, ACM, Nature, ScienceDirect, APA, atau buku teks standar).
+   - JIKA PERTANYAAN TENTANG HUKUM ISLAM, FIKIH, SYARIAH, TAFSIR, HADIS, USHULUDDIN, ATAU STUDI ISLAM:
+     * Gunakan rujukan khazanah Islam yang sahih (Fatwa DSN-MUI, Al-Qur'an/Hadis, kitab klasik/turats, dan E-Journal keislaman UIN Suka seperti Al-Ahwal, Al-Jami'ah, Esensia).
+   - HANYA gunakan pendekatan "Integrasi-Interkoneksi" jika pengguna secara eksplisit menanyakannya atau meminta kaitan antara sains dan agama.
+2. Fakultas yang sedang dipilih pengguna: "${faculty}". Perhatikan ranah fakultas ini untuk memfokuskan gaya jawaban.`;
+
+      let modeInstruction = "";
+      if (activeModeForThisPrompt === "simple") {
+        modeInstruction = `
+INSTRUKSI FORMAT: MODE TUGAS BIASA (SINGKAT & LANGSUNG KE INTI)
+- Jawab singkat, padat, lugas, dan langsung menjawab inti tugas.
+- Tanpa pembuka atau penutup basa-basi.
+- Sumber seperlunya saja (1-2 rujukan singkat yang paling relevan dengan bidang ilmu tersebut).`;
+      } else {
+        modeInstruction = `
+INSTRUKSI FORMAT: MODE RISET DETAIL (MENDALAM & SUMBER LENGKAP)
+- Berikan analisis akademik mendalam, komprehensif, dan terstruktur secara ilmiah.
+- Uraikan dasar teori, metodologi, dan telaah kritis sesuai bidang ilmunya.
+- Sertakan rujukan ilmiah yang kaya (jurnal terakreditasi/internasional, buku rujukan utama).
+- Sertakan rekomendasi penulisan sitasi akademik (APA 7th Edition atau format standar bidang ilmu terkait) di bagian akhir.`;
+      }
+
+      const fullSystemInstruction = `${disciplineRule}\n${modeInstruction}`;
+      const payload = {
+        systemInstruction: {
+          parts: [{ text: fullSystemInstruction }]
+        },
+        contents: conversationHistory,
+        generationConfig: {
+          temperature: activeModeForThisPrompt === "simple" ? 0.1 : 0.2,
+          topP: 0.95,
+          thinkingConfig: {
+            thinkingBudget: 0
+          }
+        }
+      };
+
+      let proseElement = null;
+      let accumulatedText = "";
+      let successfulModel = null;
+      let lastErrorMessage = "";
+
+      // AUTO-FAILOVER QUEUE LOOP: Try models sequentially if high demand / error occurs
+      for (const candidateModel of MODEL_FALLBACK_QUEUE) {
+        activeAbortController = new AbortController();
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${candidateModel}:streamGenerateContent?alt=sse&key=${apiKey}`;
+
+        try {
+          loadingStatus.textContent = `Memproses (${candidateModel.replace("gemini-", "").replace("-preview", "")})...`;
+
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload),
+            signal: activeAbortController.signal
+          });
+
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            const errMsg = errData.error?.message || `HTTP ${response.status}`;
+            console.warn(`Model ${candidateModel} failed with: ${errMsg}. Trying next fallback model...`);
+            lastErrorMessage = errMsg;
+            continue; // Try next model in queue!
+          }
+
+          // Initialize streaming reader
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder("utf-8");
+          let buffer = "";
+          successfulModel = candidateModel;
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop(); // keep partial trailing line
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.startsWith("data: ")) {
+                const jsonStr = trimmed.slice(6).trim();
+                if (jsonStr === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(jsonStr);
+                  const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                  if (chunk) {
+                    if (!proseElement) {
+                      loading.classList.add("hidden");
+                      proseElement = createAssistantStreamingNode(activeModeForThisPrompt, candidateModel);
+                    }
+
+                    accumulatedText += chunk;
+                    proseElement.innerHTML = marked.parse(accumulatedText);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                  }
+                } catch (e) {
+                  // Ignore partial json parse
+                }
+              }
+            }
+          }
+
+          // If tokens received successfully, break out of fallback loop!
+          if (accumulatedText) {
+            break;
+          }
+
+        } catch (err) {
+          if (err.name === "AbortError") {
+            console.log("Stream aborted by user.");
+            break;
+          }
+          console.warn(`Network/Stream error on ${candidateModel}:`, err);
+          lastErrorMessage = err.message;
+          // Continue to next candidate model
+        }
+      }
+
+      // Finalize message state
+      loading.classList.add("hidden");
+      sendBtn.disabled = false;
+      activeAbortController = null;
+
+      if (accumulatedText) {
+        if (proseElement) {
+          proseElement.classList.remove("stream-cursor");
+        }
+        conversationHistory.push({
+          role: "model",
+          parts: [{ text: accumulatedText }]
+        });
+      } else {
+        const errorNode = createAssistantStreamingNode(activeModeForThisPrompt, "Failover Error");
+        errorNode.classList.remove("stream-cursor");
+        errorNode.innerHTML = marked.parse(`⚠️ **Semua jalur server sedang mengalami lonjakan beban (*High Demand*):**\n\n\`${lastErrorMessage}\`\n\nSistem telah mencoba semua jalur cadangan (*Gemini 3.5 Flash Lite, 3.5 Flash, 3-Flash, 3.8 Flash*). Silakan tunggu sekitar 15–30 detik lalu coba kirim kembali.`);
+      }
+
+      input.focus();
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  </script>
+</body>
+</html>
