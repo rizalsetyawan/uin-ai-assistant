@@ -236,16 +236,16 @@
           id="desktopFacultySelect"
           onchange="onDesktopFacultyChange(this.value)"
           class="bg-brand-dark hover:bg-brand-card border border-brand-cardBorder text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500/60 transition-colors cursor-pointer max-w-[170px] truncate">
-          <option value="Semua Fakultas">🌐 Umum UIN Suka</option>
-          <option value="Fakultas Sains dan Teknologi">🔬 Saintek (Sains &amp; Komputer)</option>
-          <option value="Fakultas Syari'ah dan Hukum">⚖️ FSH (Syari'ah &amp; Hukum)</option>
-          <option value="Fakultas Ekonomi dan Bisnis Islam">📈 FEBI (Ekonomi)</option>
-          <option value="Fakultas Tarbiyah dan Keguruan">🎓 FITK (Pendidikan)</option>
-          <option value="Fakultas Ushuluddin dan Pemikiran Islam">📖 FUPI (Ushuluddin)</option>
-          <option value="Fakultas Dakwah dan Komunikasi">🎙️ FDK (Dakwah &amp; Komunikasi)</option>
-          <option value="Fakultas Ilmu Sosial dan Humaniora">🤝 Fishum (Sosial &amp; Psikologi)</option>
-          <option value="Fakultas Adab dan Ilmu Budaya">🏛️ Adab (Sastra &amp; Budaya)</option>
-          <option value="Pascasarjana">📚 Pascasarjana</option>
+          <option value="Semua Fakultas">Umum UIN Suka</option>
+          <option value="Fakultas Sains dan Teknologi">Saintek (Sains &amp; Komputer)</option>
+          <option value="Fakultas Syari'ah dan Hukum">FSH (Syari'ah &amp; Hukum)</option>
+          <option value="Fakultas Ekonomi dan Bisnis Islam">FEBI (Ekonomi)</option>
+          <option value="Fakultas Tarbiyah dan Keguruan">FITK (Pendidikan)</option>
+          <option value="Fakultas Ushuluddin dan Pemikiran Islam">FUPI (Ushuluddin)</option>
+          <option value="Fakultas Dakwah dan Komunikasi">FDK (Dakwah &amp; Komunikasi)</option>
+          <option value="Fakultas Ilmu Sosial dan Humaniora">Fishum (Sosial &amp; Psikologi)</option>
+          <option value="Fakultas Adab dan Ilmu Budaya">Adab (Sastra &amp; Budaya)</option>
+          <option value="Pascasarjana">Pascasarjana</option>
         </select>
 
         <!-- Desktop Sesi Baru -->
@@ -302,7 +302,9 @@
         type="button"
         class="flex-1 flex items-center justify-between bg-brand-dark hover:bg-brand-card text-xs text-slate-200 px-3 py-1.5 rounded-lg border border-brand-cardBorder active:bg-brand-card transition-all">
         <div class="flex items-center space-x-2 truncate">
-          <span id="facultyIcon" class="text-emerald-400 text-sm">🌐</span>
+          <span id="facultyIcon" class="text-emerald-400 flex items-center">
+            <span class="material-symbols-outlined text-[16px]">public</span>
+          </span>
           <span id="selectedFacultyText" class="font-medium truncate text-[11px]">Umum UIN Suka</span>
         </div>
         <svg id="facultyChevron" class="w-3.5 h-3.5 text-gray-400 ml-1.5 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -339,66 +341,68 @@
   <div id="facultyModal" class="hidden md:hidden absolute top-28 left-3.5 right-3.5 z-40 bg-[#07201c] border border-emerald-500/40 rounded-xl shadow-2xl overflow-hidden backdrop-blur-md transition-all">
     <div class="px-3.5 py-2 bg-brand-cardBorder/40 border-b border-brand-cardBorder flex items-center justify-between text-[11px] text-gray-300 font-medium">
       <span>PILIH RANAH FAKULTAS</span>
-      <button onclick="toggleFacultyDropdown(false)" class="text-gray-400 hover:text-white text-xs px-1.5 py-0.5 rounded">✕</button>
+      <button onclick="toggleFacultyDropdown(false)" class="text-gray-400 hover:text-white p-1 rounded flex items-center">
+        <span class="material-symbols-outlined text-[16px]">close</span>
+      </button>
     </div>
     <ul class="py-1 text-xs max-h-72 overflow-y-auto divide-y divide-brand-cardBorder/30">
       <li>
-        <button onclick="selectFaculty('Semua Fakultas', '🌐', 'Umum UIN Suka')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-emerald-300 font-medium bg-emerald-950/40 transition-colors" data-value="Semua Fakultas">
-          <span class="text-sm">🌐</span>
+        <button onclick="selectFaculty('Semua Fakultas', 'public', 'Umum UIN Suka')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-emerald-300 font-medium bg-emerald-950/40 transition-colors" data-value="Semua Fakultas">
+          <span class="material-symbols-outlined text-[16px]">public</span>
           <span>Umum UIN Suka</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Sains dan Teknologi', '🔬', 'Saintek (Sains & Komputer)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Sains dan Teknologi">
-          <span class="text-sm">🔬</span>
-          <span>Saintek (Sains & Komputer)</span>
+        <button onclick="selectFaculty('Fakultas Sains dan Teknologi', 'science', 'Saintek (Sains & Komputer)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Sains dan Teknologi">
+          <span class="material-symbols-outlined text-[16px]">science</span>
+          <span>Saintek (Sains &amp; Komputer)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Syari\'ah dan Hukum', '⚖️', 'FSH (Syari\'ah & Hukum)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Syari'ah dan Hukum">
-          <span class="text-sm">⚖️</span>
-          <span>FSH (Syari'ah & Hukum)</span>
+        <button onclick="selectFaculty('Fakultas Syari\'ah dan Hukum', 'gavel', 'FSH (Syari\'ah & Hukum)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Syari'ah dan Hukum">
+          <span class="material-symbols-outlined text-[16px]">gavel</span>
+          <span>FSH (Syari'ah &amp; Hukum)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Ekonomi dan Bisnis Islam', '📈', 'FEBI (Ekonomi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ekonomi dan Bisnis Islam">
-          <span class="text-sm">📈</span>
+        <button onclick="selectFaculty('Fakultas Ekonomi dan Bisnis Islam', 'trending_up', 'FEBI (Ekonomi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ekonomi dan Bisnis Islam">
+          <span class="material-symbols-outlined text-[16px]">trending_up</span>
           <span>FEBI (Ekonomi)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Tarbiyah dan Keguruan', '🎓', 'FITK (Pendidikan)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Tarbiyah dan Keguruan">
-          <span class="text-sm">🎓</span>
+        <button onclick="selectFaculty('Fakultas Tarbiyah dan Keguruan', 'school', 'FITK (Pendidikan)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Tarbiyah dan Keguruan">
+          <span class="material-symbols-outlined text-[16px]">school</span>
           <span>FITK (Pendidikan)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Ushuluddin dan Pemikiran Islam', '📖', 'FUPI (Ushuluddin)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ushuluddin dan Pemikiran Islam">
-          <span class="text-sm">📖</span>
+        <button onclick="selectFaculty('Fakultas Ushuluddin dan Pemikiran Islam', 'auto_stories', 'FUPI (Ushuluddin)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ushuluddin dan Pemikiran Islam">
+          <span class="material-symbols-outlined text-[16px]">auto_stories</span>
           <span>FUPI (Ushuluddin)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Dakwah dan Komunikasi', '🎙️', 'FDK (Dakwah & Komunikasi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Dakwah dan Komunikasi">
-          <span class="text-sm">🎙️</span>
-          <span>FDK (Dakwah & Komunikasi)</span>
+        <button onclick="selectFaculty('Fakultas Dakwah dan Komunikasi', 'campaign', 'FDK (Dakwah & Komunikasi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Dakwah dan Komunikasi">
+          <span class="material-symbols-outlined text-[16px]">campaign</span>
+          <span>FDK (Dakwah &amp; Komunikasi)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Ilmu Sosial dan Humaniora', '🧠', 'Fishum (Sosial & Psikologi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ilmu Sosial dan Humaniora">
-          <span class="text-sm">🧠</span>
-          <span>Fishum (Sosial & Psikologi)</span>
+        <button onclick="selectFaculty('Fakultas Ilmu Sosial dan Humaniora', 'psychology', 'Fishum (Sosial & Psikologi)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Ilmu Sosial dan Humaniora">
+          <span class="material-symbols-outlined text-[16px]">psychology</span>
+          <span>Fishum (Sosial &amp; Psikologi)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Fakultas Adab dan Ilmu Budaya', '🏛️', 'Adab (Sastra & Budaya)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Adab dan Ilmu Budaya">
-          <span class="text-sm">🏛️</span>
-          <span>Adab (Sastra & Budaya)</span>
+        <button onclick="selectFaculty('Fakultas Adab dan Ilmu Budaya', 'history_edu', 'Adab (Sastra & Budaya)')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Fakultas Adab dan Ilmu Budaya">
+          <span class="material-symbols-outlined text-[16px]">history_edu</span>
+          <span>Adab (Sastra &amp; Budaya)</span>
         </button>
       </li>
       <li>
-        <button onclick="selectFaculty('Pascasarjana', '📚', 'Pascasarjana')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Pascasarjana">
-          <span class="text-sm">📚</span>
+        <button onclick="selectFaculty('Pascasarjana', 'workspace_premium', 'Pascasarjana')" class="faculty-opt w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-emerald-950/70 text-slate-200 transition-colors" data-value="Pascasarjana">
+          <span class="material-symbols-outlined text-[16px]">workspace_premium</span>
           <span>Pascasarjana</span>
         </button>
       </li>
@@ -440,7 +444,7 @@
           class="p-3.5 sm:p-4 rounded-xl bg-[#09221e] border-2 border-emerald-500/70 shadow-sm relative transition-all cursor-pointer">
           <div class="flex items-center justify-between mb-1.5">
             <div class="flex items-center space-x-2">
-              <span class="text-emerald-400 text-sm">⚡</span>
+              <span class="material-symbols-outlined text-emerald-400 text-[18px]">bolt</span>
               <span class="text-xs sm:text-sm font-semibold text-emerald-300">Mode Tugas Biasa (Super Cepat)</span>
             </div>
             <span id="badge-tugas" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500 text-brand-darkest font-bold uppercase tracking-wider">Aktif</span>
@@ -457,7 +461,7 @@
           class="p-3.5 sm:p-4 rounded-xl bg-brand-dark border border-brand-cardBorder hover:border-brand-cardBorderHover shadow-sm transition-all cursor-pointer">
           <div class="flex items-center justify-between mb-1.5">
             <div class="flex items-center space-x-2">
-              <span class="text-amber-400 text-sm">📖</span>
+              <span class="material-symbols-outlined text-amber-400 text-[18px]">menu_book</span>
               <span class="text-xs sm:text-sm font-semibold text-slate-200">Mode Riset Detail</span>
             </div>
             <span id="badge-riset" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-brand-darkest font-bold uppercase tracking-wider">Aktif</span>
@@ -471,7 +475,7 @@
       <!-- Example Prompts Across Disciplines (Responsive: 1 col on mobile, 2 cols on desktop) -->
       <div class="space-y-2 pt-1">
         <div class="flex items-center space-x-1.5 px-1">
-          <span class="text-xs">💡</span>
+          <span class="material-symbols-outlined text-amber-400 text-[16px]">lightbulb</span>
           <h2 class="text-[10px] sm:text-[11px] font-bold tracking-wider text-amber-300/90 uppercase font-mono">
             CONTOH PERTANYAAN LINTAS RANAH ILMU:
           </h2>
@@ -581,7 +585,10 @@
       <div class="mt-2 flex items-center justify-between text-[10px] sm:text-[11px] text-gray-400 px-1 font-normal tracking-tight font-mono">
         <div class="flex items-center space-x-1.5 truncate max-w-[70%]">
           <span>Mode:</span>
-          <span id="activeModeLabel" class="text-emerald-400 font-medium truncate">⚡ Tugas Biasa (Cepat)</span>
+          <span id="activeModeLabel" class="text-emerald-400 font-medium truncate inline-flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">bolt</span>
+            <span>Tugas Biasa (Cepat)</span>
+          </span>
           <span class="text-gray-600">•</span>
           <span class="hidden sm:inline text-gray-400">Failover Queue: <strong class="text-emerald-400 font-normal">3.5 Flash Lite &rarr; Flash Latest &rarr; 3.5 Flash</strong></span>
           <span class="sm:hidden text-emerald-400 font-medium">Failover ON</span>
@@ -722,10 +729,24 @@
       }
     }
 
-    function selectFaculty(value, icon, label) {
+    const FACULTY_MAP = {
+      "Semua Fakultas": { icon: "public", label: "Umum UIN Suka" },
+      "Fakultas Sains dan Teknologi": { icon: "science", label: "Saintek (Sains & Komputer)" },
+      "Fakultas Syari'ah dan Hukum": { icon: "gavel", label: "FSH (Syari'ah & Hukum)" },
+      "Fakultas Ekonomi dan Bisnis Islam": { icon: "trending_up", label: "FEBI (Ekonomi)" },
+      "Fakultas Tarbiyah dan Keguruan": { icon: "school", label: "FITK (Pendidikan)" },
+      "Fakultas Ushuluddin dan Pemikiran Islam": { icon: "auto_stories", label: "FUPI (Ushuluddin)" },
+      "Fakultas Dakwah dan Komunikasi": { icon: "campaign", label: "FDK (Dakwah & Komunikasi)" },
+      "Fakultas Ilmu Sosial dan Humaniora": { icon: "psychology", label: "Fishum (Sosial & Psikologi)" },
+      "Fakultas Adab dan Ilmu Budaya": { icon: "history_edu", label: "Adab (Sastra & Budaya)" },
+      "Pascasarjana": { icon: "workspace_premium", label: "Pascasarjana" }
+    };
+
+    function selectFaculty(value, iconName, label) {
       selectedFaculty = value;
-      document.getElementById("facultyIcon").textContent = icon;
-      document.getElementById("selectedFacultyText").textContent = label;
+      const cfg = FACULTY_MAP[value] || { icon: iconName || "public", label: label || value };
+      document.getElementById("facultyIcon").innerHTML = `<span class="material-symbols-outlined text-[16px]">${cfg.icon}</span>`;
+      document.getElementById("selectedFacultyText").textContent = cfg.label;
       document.getElementById("desktopFacultySelect").value = value;
 
       // Update mobile options list
@@ -740,16 +761,12 @@
       });
 
       toggleFacultyDropdown(false);
-      showToast(`Ranah Fakultas: ${label}`);
+      showToast(`Ranah Fakultas: ${cfg.label}`);
     }
 
     function onDesktopFacultyChange(val) {
-      const select = document.getElementById("desktopFacultySelect");
-      const selectedOption = select.options[select.selectedIndex];
-      const text = selectedOption.text;
-      const icon = text.split(" ")[0] || "🌐";
-      const label = text.substring(icon.length).trim() || text;
-      selectFaculty(val, icon, label);
+      const cfg = FACULTY_MAP[val] || { icon: "public", label: val };
+      selectFaculty(val, cfg.icon, cfg.label);
     }
 
     // Mode Controller: "simple" (Tugas Biasa) vs "detail" (Riset Detail)
@@ -790,8 +807,8 @@
         badgeRiset.classList.add("hidden");
 
         // Footer
-        activeModeLabel.textContent = "⚡ Tugas Biasa (Cepat)";
-        activeModeLabel.className = "text-emerald-400 font-medium truncate";
+        activeModeLabel.innerHTML = '<span class="material-symbols-outlined text-[13px]">bolt</span><span>Tugas Biasa (Cepat)</span>';
+        activeModeLabel.className = "text-emerald-400 font-medium truncate inline-flex items-center gap-1";
         switchModeLink.textContent = "Ganti ke Riset Detail";
       } else {
         // Desktop nav
@@ -809,8 +826,8 @@
         badgeTugas.classList.add("hidden");
 
         // Footer
-        activeModeLabel.textContent = "📖 Mode Riset Detail";
-        activeModeLabel.className = "text-amber-400 font-medium truncate";
+        activeModeLabel.innerHTML = '<span class="material-symbols-outlined text-[13px]">menu_book</span><span>Riset Detail</span>';
+        activeModeLabel.className = "text-amber-400 font-medium truncate inline-flex items-center gap-1";
         switchModeLink.textContent = "Ganti ke Tugas Biasa";
       }
     }
